@@ -4,9 +4,10 @@ no Hastings Ratio, that takes proposal distributions as an argument
 """
 
 import numpy as np
+from base_sampler import BaseSampler
 
 
-class GeneralizedMetropolis():
+class GeneralizedMetropolis(BaseSampler):
 
     def __init__(self,
                  target) -> None:

@@ -4,6 +4,7 @@ no Hastings Ratio, with normal proposal distribution
 """
 
 import numpy as np
+from base_sampler import BaseSampler
 
 
 class GaussianMetropolis():

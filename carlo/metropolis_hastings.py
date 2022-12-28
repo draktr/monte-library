@@ -3,9 +3,10 @@ Metropolis-Hastings algorithm that takes proposal distributions as an argument.
 """
 
 import numpy as np
+from base_sampler import BaseSampler
 
 
-class MetropolisHastings():
+class MetropolisHastings(BaseSampler):
 
     def __init__(self,
                  target) -> None:
