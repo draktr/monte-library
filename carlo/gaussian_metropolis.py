@@ -7,7 +7,7 @@ import numpy as np
 from base_sampler import BaseSampler
 
 
-class GaussianMetropolis():
+class GaussianMetropolis(BaseSampler):
 
     def __init__(self,
                  target) -> None:
@@ -49,5 +49,8 @@ class GaussianMetropolis():
                 theta, a = self._iterate(theta, step_size)
             samples[i] = theta
             acceptances[i] = a
+
+        self.samples = samples
+        self.acceptances = acceptances
 
         return samples, acceptances

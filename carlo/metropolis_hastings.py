@@ -62,4 +62,7 @@ class MetropolisHastings(BaseSampler):
             samples[i] = theta
             acceptances[i] = a
 
+        self.samples = samples
+        self.acceptances = acceptances
+
         return samples, acceptances
