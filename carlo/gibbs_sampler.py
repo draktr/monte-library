@@ -9,8 +9,14 @@ class GibbsSampler(BaseSampler):
 
         self.sampling_distributions = sampling_distributions
 
-    def _iterate(self):
-        pass
+    def _iterate(self,
+                 theta):
+
+        for i in range(len(theta)):
+            theta[i] = self.sampling_distributions[i](theta)
+        a = 1
+
+        return theta, a
 
     def sample(self,
                iter,
@@ -19,7 +25,7 @@ class GibbsSampler(BaseSampler):
                lag = 1):
 
         if len(theta) != len(self.sampling_distributions):
-            raise ValueError("There should be one and only one parameter per sampler")
+            raise ValueError("There should be one and only one parameter per sampling distribution")
 
         samples = np.zeros(iter)
         acceptances = np.zeros(iter)
