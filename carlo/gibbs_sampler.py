@@ -12,8 +12,11 @@ class GibbsSampler(BaseSampler):
     def _iterate(self,
                  theta):
 
+        theta_conditions = theta
         for i in range(len(theta)):
-            theta[i] = self.sampling_distributions[i](theta)
+            theta_conditions.pop(i)
+            theta[i] = self.sampling_distributions[i](theta_conditions)
+            theta_conditions = theta
         a = 1
 
         return theta, a
