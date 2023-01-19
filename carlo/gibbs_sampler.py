@@ -5,12 +5,35 @@ from base_sampler import BaseSampler
 class GibbsSampler(BaseSampler):
 
     def __init__(self,
-                 target) -> None:
+                 sampling_distributions) -> None:
 
-        self.target = target
+        self.sampling_distributions = sampling_distributions
 
     def _iterate(self):
         pass
 
-    def sample():
-        pass
+    def sample(self,
+               iter,
+               warmup,
+               theta,
+               lag = 1):
+
+        if len(theta) != len(self.sampling_distributions):
+            raise ValueError("There should be one and only one parameter per sampler")
+
+        samples = np.zeros(iter)
+        acceptances = np.zeros(iter)
+
+        for i in range(warmup):
+            theta, a = self._iterate(theta)
+
+        for i in range(iter):
+            for _ in range(lag):
+                theta, a = self._iterate(theta)
+            samples[i] = theta
+            acceptances[i] = a
+
+        self.samples = samples
+        self.acceptances = acceptances
+
+        return samples, acceptances
