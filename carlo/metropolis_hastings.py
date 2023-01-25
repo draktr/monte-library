@@ -24,7 +24,7 @@ class MetropolisHastings(BaseSampler):
         metropolis_ratio = self.target(theta_proposed) / self.target(theta_current)
         hastings_ratio = proposal_density(theta_current, theta_proposed, **proposal_parameters) / \
                          proposal_density(theta_proposed, theta_current, **proposal_parameters)
-        alpha = metropolis_ratio * hastings_ratio
+        alpha = min(1, metropolis_ratio * hastings_ratio)
         u = np.random.rand()
         if u <= alpha:
             theta_new = theta_proposed

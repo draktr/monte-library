@@ -21,7 +21,7 @@ class GeneralizedMetropolis(BaseSampler):
 
         theta_proposed = proposal_sampler(theta_current,
                                           **proposal_parameters)
-        alpha = self.target(theta_proposed) / self.target(theta_current)
+        alpha = min(1, self.target(theta_proposed) / self.target(theta_current))
         u = np.random.rand()
         if u <= alpha:
             theta_new = theta_proposed
