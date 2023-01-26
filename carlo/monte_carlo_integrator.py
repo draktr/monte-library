@@ -1,10 +1,7 @@
 import numpy as np
 
 
-def integrator(integrand,
-               lower_bounds,
-               upper_bounds,
-               n):
+def integrator(integrand, lower_bounds, upper_bounds, n):
     """
     Integrates n-dimensional function using Monte Carlo simulation
 
@@ -23,15 +20,13 @@ def integrator(integrand,
     if len(lower_bounds) != len(upper_bounds):
         raise ValueError("Lower and upper bounds are of different dimensions.")
 
-    x = np.random.uniform(lower_bounds,
-                          upper_bounds,
-                          (n, len(lower_bounds)))
+    x = np.random.uniform(lower_bounds, upper_bounds, (n, len(lower_bounds)))
 
     summation = 0
     for i in x:
         summation += integrand(i)
     domain = np.prod(np.subtract(upper_bounds, lower_bounds))
 
-    integral = domain/n*summation
+    integral = domain / n * summation
 
     return integral

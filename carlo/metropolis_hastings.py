@@ -7,23 +7,20 @@ from base_sampler import BaseSampler
 
 
 class MetropolisHastings(BaseSampler):
+    def __init__(self, target) -> None:
 
-    def __init__(self,
-                 target) -> None:
-
+        super().__init__()
         self.target = target
 
-    def _iterate(self,
-                 theta_current,
-                 proposal_sampler,
-                 proposal_density,
-                 **proposal_parameters):
+    def _iterate(
+        self, theta_current, proposal_sampler, proposal_density, **proposal_parameters
+    ):
 
-        theta_proposed = proposal_sampler(theta_current,
-                                          **proposal_parameters)
+        theta_proposed = proposal_sampler(theta_current, **proposal_parameters)
         metropolis_ratio = self.target(theta_proposed) / self.target(theta_current)
-        hastings_ratio = proposal_density(theta_current, theta_proposed, **proposal_parameters) / \
-                         proposal_density(theta_proposed, theta_current, **proposal_parameters)
+        hastings_ratio = proposal_density(
+            theta_current, theta_proposed, **proposal_parameters
+        ) / proposal_density(theta_proposed, theta_current, **proposal_parameters)
         alpha = min(1, metropolis_ratio * hastings_ratio)
         u = np.random.rand()
         if u <= alpha:
@@ -35,30 +32,30 @@ class MetropolisHastings(BaseSampler):
 
         return theta_new, a
 
-    def sample(self,
-               iter,
-               warmup,
-               theta,
-               proposal_sampler,
-               proposal_density,
-               lag = 1,
-               **proposal_parameters):
+    def sample(
+        self,
+        iter,
+        warmup,
+        theta,
+        proposal_sampler,
+        proposal_density,
+        lag=1,
+        **proposal_parameters
+    ):
 
         samples = np.zeros(iter)
         acceptances = np.zeros(iter)
 
         for i in range(warmup):
-            theta, a = self._iterate(theta,
-                                     proposal_sampler,
-                                     proposal_density,
-                                     **proposal_parameters)
+            theta, a = self._iterate(
+                theta, proposal_sampler, proposal_density, **proposal_parameters
+            )
 
         for i in range(iter):
             for _ in range(lag):
-                theta, a = self._iterate(theta,
-                                         proposal_sampler,
-                                         proposal_density,
-                                         **proposal_parameters)
+                theta, a = self._iterate(
+                    theta, proposal_sampler, proposal_density, **proposal_parameters
+                )
             samples[i] = theta
             acceptances[i] = a
 

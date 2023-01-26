@@ -12,6 +12,7 @@ class GaussianMetropolis(BaseSampler):
     def __init__(self,
                  target) -> None:
 
+        super().__init__()
         self.target = target
 
     def _iterate(self,

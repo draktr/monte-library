@@ -8,15 +8,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-class BaseSampler():
-
+class BaseSampler:
     def __init__(self) -> None:
 
         self.samples = None
         self.acceptances = None
 
-    def save_samples(self,
-                     path = None):
+    def save_samples(self, path=None):
 
         pd.DataFrame(self.samples).to_csv(path)
 
@@ -32,17 +30,13 @@ class BaseSampler():
 
         return np.mean(self.acceptances)
 
-    def plot_histogram(self,
-                       figsize = (12, 8),
-                       bins = 100,
-                       show = True,
-                       save = False):
+    def plot_histogram(self, figsize=(12, 8), bins=100, show=True, save=False):
 
         dim = self.samples.shape[1]
         fig = plt.figure(figsize=figsize, constrained_layout=True)
-        axs = [plt.subplot(dim, 1, i+1) for i in range (dim)]
+        axs = [plt.subplot(dim, 1, i + 1) for i in range(dim)]
         for i in range(dim):
-            axs[i].hist(self.samples[:, i], bins = bins)
+            axs[i].hist(self.samples[:, i], bins=bins)
             axs[i].set_xlabel(f"theta_{i}")
             axs[i].set_ylabel("density")
             axs[i].set_title(f"theta_{i} histogram")
@@ -52,20 +46,16 @@ class BaseSampler():
         if show is True:
             plt.show()
 
-    def parameter_kde(self,
-                      figsize = (12, 8),
-                      histogram = True,
-                      bins = 100,
-                      show = True,
-                      save = False,
-                      **kwargs):
+    def parameter_kde(
+        self, figsize=(12, 8), histogram=True, bins=100, show=True, save=False, **kwargs
+    ):
 
         dim = self.samples.shape[1]
         fig = plt.figure(figsize=figsize, constrained_layout=True)
-        axs = [plt.subplot(dim, 1, i+1) for i in range (dim)]
+        axs = [plt.subplot(dim, 1, i + 1) for i in range(dim)]
         for i in range(dim):
             if histogram is True:
-                axs[i].hist(self.samples[:, i], bins = bins)
+                axs[i].hist(self.samples[:, i], bins=bins)
             sns.kdeplot(self.samples[:, i], ax=axs[i], **kwargs)
             axs[i].set_xlabel(f"theta_{i}")
             axs[i].set_ylabel("density")
@@ -76,15 +66,11 @@ class BaseSampler():
         if show is True:
             plt.show()
 
-    def traceplots(self,
-                   figsize = (12, 8),
-                   show = True,
-                   save = False,
-                   **kwargs):
+    def traceplots(self, figsize=(12, 8), show=True, save=False, **kwargs):
 
         dim = self.samples.shape[1]
         fig = plt.figure(figsize=figsize, constrained_layout=True)
-        axs = [plt.subplot(dim, 1, i+1) for i in range (dim)]
+        axs = [plt.subplot(dim, 1, i + 1) for i in range(dim)]
         for i in range(dim):
             axs[i].plot(self.samples[:, i], **kwargs)
             axs[i].set_xlabel("iteration")
