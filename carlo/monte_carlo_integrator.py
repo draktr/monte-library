@@ -1,3 +1,10 @@
+"""
+Module containing Monte Carlo integrator
+
+:raises ValueError: Lower and upper bounds are of different dimensions.
+:return: Approximate integral value
+:rtype: float
+"""
 import numpy as np
 
 
