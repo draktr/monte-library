@@ -10,6 +10,33 @@ def generate_data(true_param, n):
     return x, y
 
 
+def likelihood(param, x, y):
+    a = param[0]
+    b = param[1]
+    sd = param[2]
+
+    pred = a * x + b
+    singlelikelihoods = stats.norm(loc=pred, scale=sd).pdf(y)
+    prodlikelihood = np.prod(singlelikelihoods)
+
+    return prodlikelihood
+
+
+def prior(param):
+    a = param[0]
+    b = param[1]
+    sd = param[2]
+    aprior = stats.norm(loc=0, scale=30).pdf(a)
+    bprior = stats.norm(loc=0, scale=30).pdf(b)
+    sdprior = stats.norm(loc=0, scale=30).pdf(sd)
+
+    return aprior * bprior * sdprior
+
+
+def target(param, x, y):
+    return likelihood(param, x, y) * prior(param)
+
+
 @pytest.fixture
 def sampler(target):
     sampler = MetropolisHastings(target)
