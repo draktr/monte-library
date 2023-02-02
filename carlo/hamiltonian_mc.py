@@ -5,10 +5,13 @@ to perform numerical integration that is  then corrected by Metropolis acceptanc
 """
 
 import numpy as np
-from base_sampler import BaseSampler
+from carlo import base_sampler
+
+# TODO: implement in non-log space, but do calc in log (translation w exponentiation)
+# TODO: check that M is symatric ,positive-definite
 
 
-class HamiltonianMC(BaseSampler):
+class HamiltonianMC(base_sampler.BaseSampler):
     def __init__(self, target_lp, target_lp_gradient) -> None:
         """
         Initializes the problem sampler object
@@ -24,7 +27,7 @@ class HamiltonianMC(BaseSampler):
         self.target_lp = target_lp
         self.target_lp_gradient = target_lp_gradient
 
-    def _hamiltonian(self, theta, rho):
+    def _hamiltonian(self, theta, rho, inverse_metric):
         """
         Calculates the Hamiltonian of the current particle. Mass of the particle is taken as
         :math:`m=1`. The most general form of kinetic energy of a physical object is used:
@@ -38,9 +41,11 @@ class HamiltonianMC(BaseSampler):
         :rtype: float
         """
 
-        return 0.5 * np.sum(rho**2) + -self.target_lp(theta)
+        return 0.5 * np.sum(inverse_metric * rho**2) - self.target_lp(theta)
 
-    def _acceptance(self, theta_proposed, rho_updated, theta_current, rho_current):
+    def _acceptance(
+        self, theta_proposed, rho_updated, theta_current, rho_current, inverse_metric
+    ):
         """
         Logarithmic version of Metropolis acceptance criterion
 
@@ -59,8 +64,8 @@ class HamiltonianMC(BaseSampler):
         return min(
             0,
             -(
-                self._hamiltonian(theta_proposed, rho_updated)
-                - self._hamiltonian(theta_current, rho_current)
+                self._hamiltonian(theta_proposed, rho_updated, inverse_metric)
+                - self._hamiltonian(theta_current, rho_current, inverse_metric)
             ),
         )
 
@@ -119,7 +124,7 @@ class HamiltonianMC(BaseSampler):
         )
 
         alpha = self._acceptance(
-            theta_proposed, rho_updated, theta_current, rho_current
+            theta_proposed, rho_updated, theta_current, rho_current, inverse_metric
         )
         u = np.random.rand()
         if u <= alpha:
