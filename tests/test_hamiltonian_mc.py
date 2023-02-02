@@ -11,18 +11,46 @@ def generate_data(true_param, n):
     return x, y
 
 
-def target_lp():
-    pass
+def target(X, y, th):
+    beta = th[0:-1]
+    sigma = th[-1]
+    sigma2 = sigma**2
+    mu = X * beta
+
+    prioralpha = 0.001
+    priorbeta = 0.001
+
+    likelihood = stats.multivariate_normal(
+        mean=mu, cov=np.diag(np.repeat(sigma2, len(y)))
+    ).pdf(y)
+    priorb = stats.multivariate_normal(
+        mean=np.repeat(0, len(beta)), cov=np.diag(np.repeat(100, len(beta)))
+    ).pdf(beta)
+    priors2 = stats.gamma(a=prioralpha, scale=1 / priorbeta).pdf(1 / sigma2)
+    posterior = likelihood * priorb * priors2
+
+    return posterior
 
 
-def target_lp_gradietn():
-    pass
+def target_gradietn(X, y, th):
+    d = len(th)
+    e = 0.0001
+    diffs = np.zeros(d)
+
+    for k in range(d):
+        th_hi = th
+        th_lo = th
+        th_hi[k] = th[k] + e
+        th_lo[k] = th[k] - e
+        diffs[k] = (target(X, y, th_hi) - target(X, y, th_lo)) / (2 * e)
+
+    return diffs
 
 
 @pytest.fixture
-def sampler(target_lp, target_lp_gradient):
+def sampler(target, target_gradient):
 
-    sampler = HamiltonianMC(target_lp, target_lp_gradient)
+    sampler = HamiltonianMC(target, target_gradient)
     return sampler
 
 
