@@ -24,7 +24,7 @@ class HamiltonianMC(base_sampler.BaseSampler):
         self.target_lp = target_lp
         self.target_lp_gradient = target_lp_gradient
 
-    def _hamiltonian(self, theta, rho, inverse_metric):
+    def _hamiltonian(self, theta, rho, inverse_metric, **kwargs):
         """
         Calculates the Hamiltonian of the current particle. Mass of the particle is taken as
         :math:`m=1`. The most general form of kinetic energy of a physical object is used:
@@ -38,10 +38,18 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :rtype: float
         """
 
-        return 0.5 * np.sum(inverse_metric * rho**2) - self.target_lp(theta)
+        return 0.5 * np.dot(np.matmul(inverse_metric, rho), rho) - self.target_lp(
+            theta, **kwargs
+        )
 
     def _acceptance(
-        self, theta_proposed, rho_updated, theta_current, rho_current, inverse_metric
+        self,
+        theta_proposed,
+        rho_updated,
+        theta_current,
+        rho_current,
+        inverse_metric,
+        **kwargs
     ):
         """
         Metropolis acceptance criterion
@@ -62,13 +70,17 @@ class HamiltonianMC(base_sampler.BaseSampler):
             1,
             np.exp(
                 (
-                    self._hamiltonian(theta_proposed, rho_updated, inverse_metric)
-                    - self._hamiltonian(theta_current, rho_current, inverse_metric)
+                    self._hamiltonian(
+                        theta_proposed, rho_updated, inverse_metric, **kwargs
+                    )
+                    - self._hamiltonian(
+                        theta_current, rho_current, inverse_metric, **kwargs
+                    )
                 )
             ),
         )
 
-    def _leapfrog(self, theta, rho, epsilon, l, inverse_metric):
+    def _leapfrog(self, theta, rho, epsilon, l, inverse_metric, **kwargs):
         """
         Leapfrom integrator used to simulate the movement of the particle
 
@@ -86,14 +98,16 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        rho -= 0.5 * epsilon * -self.target_lp_gradient(theta)
-        for _ in range(l):
-            theta += epsilon * inverse_metric * rho
-            rho -= 0.5 * epsilon * -self.target_lp_gradient(theta)
+        rho -= 0.5 * epsilon * -self.target_lp_gradient(theta, **kwargs)
+        for _ in range(l - 1):
+            theta += epsilon * np.matmul(inverse_metric, rho)
+            rho -= epsilon * -self.target_lp_gradient(theta, **kwargs)
+        theta += epsilon * np.matmul(inverse_metric, rho)
+        rho -= 0.5 * epsilon * -self.target_lp_gradient(theta, **kwargs)
 
         return theta, rho
 
-    def _iterate(self, theta_current, epsilon, l, metric, inverse_metric):
+    def _iterate(self, theta_current, epsilon, l, metric, inverse_metric, **kwargs):
         """
         Single iteration of the sampler
 
@@ -117,11 +131,21 @@ class HamiltonianMC(base_sampler.BaseSampler):
             size=theta_current.shape[0],
         )
         theta_proposed, rho_updated = self._leapfrog(
-            theta_current.copy(), rho_current.copy(), epsilon, l, inverse_metric
+            theta_current.copy(),
+            rho_current.copy(),
+            epsilon,
+            l,
+            inverse_metric,
+            **kwargs
         )
 
         alpha = self._acceptance(
-            theta_proposed, rho_updated, theta_current, rho_current, inverse_metric
+            theta_proposed,
+            rho_updated,
+            theta_current,
+            rho_current,
+            inverse_metric,
+            **kwargs
         )
         u = np.random.rand()
         if u <= alpha:
@@ -133,7 +157,7 @@ class HamiltonianMC(base_sampler.BaseSampler):
 
         return theta_new, a
 
-    def sample(self, iter, warmup, theta, epsilon, l, metric=None, lag=1):
+    def sample(self, iter, warmup, theta, epsilon, l, metric=None, lag=1, **kwargs):
         """
         Samples from the target distributions
 
@@ -167,11 +191,15 @@ class HamiltonianMC(base_sampler.BaseSampler):
         inverse_metric = np.linalg.inv(metric)
 
         for i in range(warmup):
-            theta, a = self._iterate(theta, epsilon, l, metric, inverse_metric)
+            theta, a = self._iterate(
+                theta, epsilon, l, metric, inverse_metric, **kwargs
+            )
 
         for i in range(iter):
             for _ in range(lag):
-                theta, a = self._iterate(theta, epsilon, l, metric, inverse_metric)
+                theta, a = self._iterate(
+                    theta, epsilon, l, metric, inverse_metric, **kwargs
+                )
             samples[i] = theta
             acceptances[i] = a
 
