@@ -7,9 +7,6 @@ to perform numerical integration that is  then corrected by Metropolis acceptanc
 import numpy as np
 from carlo import base_sampler
 
-# TODO: implement in non-log space, but do calc in log (translation w exponentiation)
-# TODO: check that M is symatric ,positive-definite
-
 
 class HamiltonianMC(base_sampler.BaseSampler):
     def __init__(self, target_lp, target_lp_gradient) -> None:
@@ -47,7 +44,7 @@ class HamiltonianMC(base_sampler.BaseSampler):
         self, theta_proposed, rho_updated, theta_current, rho_current, inverse_metric
     ):
         """
-        Logarithmic version of Metropolis acceptance criterion
+        Metropolis acceptance criterion
 
         :param theta_proposed: Proposed parameter vector
         :type theta_proposed: ndarray
@@ -57,15 +54,17 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :type theta_current: ndarray
         :param rho_current: Current momentum vector
         :type rho_current: ndarray
-        :return: Acceptance probability in logarithmic space
+        :return: Acceptance probability
         :rtype: float
         """
 
         return min(
-            0,
-            -(
-                self._hamiltonian(theta_proposed, rho_updated, inverse_metric)
-                - self._hamiltonian(theta_current, rho_current, inverse_metric)
+            1,
+            np.exp(
+                (
+                    self._hamiltonian(theta_proposed, rho_updated, inverse_metric)
+                    - self._hamiltonian(theta_current, rho_current, inverse_metric)
+                )
             ),
         )
 
@@ -88,11 +87,9 @@ class HamiltonianMC(base_sampler.BaseSampler):
         """
 
         rho -= 0.5 * epsilon * -self.target_lp_gradient(theta)
-        for _ in range(l - 1):
+        for _ in range(l):
             theta += epsilon * inverse_metric * rho
             rho -= 0.5 * epsilon * -self.target_lp_gradient(theta)
-        theta += epsilon * inverse_metric * rho
-        rho -= 0.5 * epsilon * -self.target_lp_gradient(theta)
 
         return theta, rho
 
