@@ -6,10 +6,10 @@ Metropolis-Hastings algorithm should be used which can be found in `metropolis_h
 """
 
 import numpy as np
-from base_sampler import BaseSampler
+from carlo import base_sampler
 
 
-class GeneralizedMetropolis(BaseSampler):
+class GeneralizedMetropolis(base_sampler.BaseSampler):
     def __init__(self, target) -> None:
         """
         Initializes the problem sampler object.
@@ -38,7 +38,7 @@ class GeneralizedMetropolis(BaseSampler):
         """
 
         theta_proposed = proposal_sampler(theta_current, **proposal_parameters)
-        alpha = min(1, self.target(theta_proposed) / self.target(theta_current))
+        alpha = min(1, np.exp(self.target(theta_proposed) - self.target(theta_current)))
         u = np.random.rand()
         if u <= alpha:
             theta_new = theta_proposed

@@ -5,10 +5,10 @@ proposal distribution can be any arbitrary distribution including non-symetrical
 """
 
 import numpy as np
-from base_sampler import BaseSampler
+from carlo import base_sampler
 
 
-class MetropolisHastings(BaseSampler):
+class MetropolisHastings(base_sampler.BaseSampler):
     def __init__(self, target) -> None:
         """
         Initializes the problem sampler object.
@@ -45,11 +45,11 @@ class MetropolisHastings(BaseSampler):
         """
 
         theta_proposed = proposal_sampler(theta_current, **proposal_parameters)
-        metropolis_ratio = self.target(theta_proposed) / self.target(theta_current)
+        metropolis_ratio = self.target(theta_proposed) - self.target(theta_current)
         hastings_ratio = proposal_density(
             theta_current, theta_proposed, **proposal_parameters
-        ) / proposal_density(theta_proposed, theta_current, **proposal_parameters)
-        alpha = min(1, metropolis_ratio * hastings_ratio)
+        ) - proposal_density(theta_proposed, theta_current, **proposal_parameters)
+        alpha = min(1, np.exp(metropolis_ratio + hastings_ratio))
         u = np.random.rand()
         if u <= alpha:
             theta_new = theta_proposed

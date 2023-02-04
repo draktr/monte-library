@@ -6,10 +6,10 @@ proposals are accepted.
 """
 
 import numpy as np
-from base_sampler import BaseSampler
+from carlo import base_sampler
 
 
-class GibbsSampler(BaseSampler):
+class GibbsSampler(base_sampler.BaseSampler):
     def __init__(self, sampling_distributions) -> None:
         """
         Initializes the problem sampler object.

@@ -4,10 +4,10 @@ with Gaussian proposal distribution.
 """
 
 import numpy as np
-from base_sampler import BaseSampler
+from carlo import base_sampler
 
 
-class GaussianMetropolis(BaseSampler):
+class GaussianMetropolis(base_sampler.BaseSampler):
     def __init__(self, target) -> None:
         """
         Initializes the problem sampler object.
@@ -35,7 +35,7 @@ class GaussianMetropolis(BaseSampler):
         """
 
         theta_proposed = np.random.normal(loc=theta_current, scale=step_size)
-        alpha = min(1, self.target(theta_proposed) / self.target(theta_current))
+        alpha = min(1, np.exp(self.target(theta_proposed) - self.target(theta_current)))
         u = np.random.rand()
         if u <= alpha:
             theta_new = theta_proposed
