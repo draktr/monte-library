@@ -38,7 +38,7 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :rtype: float
         """
 
-        return 0.5 * np.dot(np.matmul(inverse_metric, rho), rho) - self.target_lp(
+        return 0.5 * np.dot(np.matmul(rho, inverse_metric), rho) - self.target_lp(
             theta, **kwargs
         )
 
