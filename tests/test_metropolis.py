@@ -1,13 +1,19 @@
 import pytest
 import numpy as np
 from scipy import stats
-from gaussian_metropolis import GaussianMetropolis
-from generalized_metropolis import GeneralizedMetropolis
+from carlo.gaussian_metropolis import GaussianMetropolis
+from carlo.generalized_metropolis import GeneralizedMetropolis
 
 
 def generate_data(true_param, n):
-    x = np.linspace(-20, 20, n)
-    y = true_param[0] * x + true_param[1] + stats.norm(loc=0, scale=true_param[2])
+
+    x = np.zeros((n, 4))
+    x[:, 0] = np.repeat(1, n)
+    x[:, 1:4] = stats.norm(loc=0, scale=1).rvs(size=(n, 3))
+
+    mu = np.matmul(x, true_param[0:-1])
+    y = stats.norm(loc=mu, scale=true_param[-1]).rvs(size=n)
+
     return x, y
 
 
