@@ -6,45 +6,47 @@ from carlo.hamiltonian_mc import HamiltonianMC
 
 def generate_data(true_param, n):
 
-    x = np.linspace(-20, 20, n)
-    y = true_param[0] * x + true_param[1] + stats.norm(loc=0, scale=true_param[2])
+    x = np.zeros((n, 4))
+    x[:, 0] = np.repeat(1, n)
+    x[:, 1:4] = stats.norm(loc=0, scale=1).rvs(size=(n, 3))
+
+    mu = np.matmul(x, true_param[0:-1])
+    y = stats.norm(loc=mu, scale=true_param[-1]).rvs(size=n)
+
     return x, y
 
 
-def target(X, y, th):
-    beta = th[0:-1]
-    sigma = th[-1]
-    sigma2 = sigma**2
-    mu = X * beta
+def target(x, y, theta):
+    mu = np.matmul(x, theta[0:-1])
 
     prioralpha = 0.001
     priorbeta = 0.001
 
     likelihood = stats.multivariate_normal(
-        mean=mu, cov=np.diag(np.repeat(sigma2, len(y)))
-    ).pdf(y)
+        mean=mu, cov=np.diag(np.repeat(theta[-1] ** 2, len(y)))
+    ).logpdf(y)
     priorb = stats.multivariate_normal(
-        mean=np.repeat(0, len(beta)), cov=np.diag(np.repeat(100, len(beta)))
-    ).pdf(beta)
-    priors2 = stats.gamma(a=prioralpha, scale=1 / priorbeta).pdf(1 / sigma2)
+        mean=np.repeat(0, len(theta[0:-1])),
+        cov=np.diag(np.repeat(100, len(theta[0:-1]))),
+    ).logpdf(theta[0:-1])
+    priors2 = stats.gamma(a=prioralpha, scale=1 / priorbeta).logpdf(1 / theta[-1] ** 2)
     posterior = likelihood * priorb * priors2
 
     return posterior
 
 
-def target_gradietn(X, y, th):
-    d = len(th)
-    e = 0.0001
-    diffs = np.zeros(d)
+def target_gradient(x, y, theta):
+    delta = 0.0001
+    gradient = np.zeros(len(theta))
 
-    for k in range(d):
-        th_hi = th
-        th_lo = th
-        th_hi[k] = th[k] + e
-        th_lo[k] = th[k] - e
-        diffs[k] = (target(X, y, th_hi) - target(X, y, th_lo)) / (2 * e)
+    for k in range(len(theta)):
+        theta_hi = theta
+        theta_lo = theta
+        theta_hi[k] = theta[k] + delta
+        theta_lo[k] = theta[k] - delta
+        gradient[k] = (target(x, y, theta_hi) - target(x, y, theta_lo)) / (2 * delta)
 
-    return diffs
+    return gradient
 
 
 @pytest.fixture
@@ -58,7 +60,7 @@ def test(sampler):
 
     true_param = np.array([5, 10, 2])
     x, y = generate_data(true_param=true_param, n=50)
-    sampler.sample(iter=100000, warmup=1000, theta=0, step_size=0.1, lag=1)
+    sampler.sample(iter=100000, warmup=1000, theta=0, step_size=0.1, lag=1, x=x, y=y)
 
     mean = sampler.mean()
     assert mean - true_param <= np.repeat(10 ** (-2), len(mean))
