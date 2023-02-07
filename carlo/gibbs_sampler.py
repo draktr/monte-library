@@ -14,13 +14,13 @@ class GibbsSampler(base_sampler.BaseSampler):
         """
         Initializes the problem sampler object.
 
-        :param sampling_distributions: List of full conditional posterior
+        :param sampling_distributions: Array of full conditional posterior
         distributions :math:`f(\theta_j|\theta_{\backslash j, y})`.
         The order of the distributions should match the order of parameters
         in parameter vector passed to `sample()` method. Each respective
         distribution should take all other parameters as arguments and return
         the sample of the particular parameter conditional on those arguments.
-        :type sampling_distributions: list
+        :type sampling_distributions: ndarray
         """
 
         super().__init__()

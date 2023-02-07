@@ -17,7 +17,7 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :type target_lp: function
         :param target_lp_gradient: Log-probability of the gradient of the target
         distribution to be sampled from
-        :type target_lp_gradient: list
+        :type target_lp_gradient: function
         """
 
         super().__init__()
