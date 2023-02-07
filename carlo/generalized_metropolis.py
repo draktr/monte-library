@@ -23,7 +23,7 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         super().__init__()
         self.target = target
 
-    def _iterate(self, theta_current, proposal_sampler):
+    def _iterate(self, theta_current, proposal_sampler, **kwargs):
         """
         Single iteration of the sampler
 
@@ -38,7 +38,13 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         """
 
         theta_proposed = proposal_sampler(theta_current)
-        alpha = min(1, np.exp(self.target(theta_proposed) - self.target(theta_current)))
+        alpha = min(
+            1,
+            np.exp(
+                self.target(theta_proposed, **kwargs)
+                - self.target(theta_current, **kwargs)
+            ),
+        )
         u = np.random.rand()
         if u <= alpha:
             theta_new = theta_proposed
@@ -49,7 +55,7 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
 
         return theta_new, a
 
-    def sample(self, iter, warmup, theta, proposal_sampler, lag=1):
+    def sample(self, iter, warmup, theta, proposal_sampler, lag=1, **kwargs):
         """
         Samples from the target distribution
 
@@ -78,11 +84,11 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         acceptances = np.zeros(iter)
 
         for i in range(warmup):
-            theta, a = self._iterate(theta, proposal_sampler)
+            theta, a = self._iterate(theta, proposal_sampler, **kwargs)
 
         for i in range(iter):
             for _ in range(lag):
-                theta, a = self._iterate(theta, proposal_sampler)
+                theta, a = self._iterate(theta, proposal_sampler, **kwargs)
             samples[i] = theta
             acceptances[i] = a
 

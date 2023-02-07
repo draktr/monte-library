@@ -21,7 +21,7 @@ class GaussianMetropolis(base_sampler.BaseSampler):
         super().__init__()
         self.target = target
 
-    def _iterate(self, theta_current, step_size):
+    def _iterate(self, theta_current, step_size, **kwargs):
         """
         Single iteration of the sampler
 
@@ -35,7 +35,13 @@ class GaussianMetropolis(base_sampler.BaseSampler):
         """
 
         theta_proposed = np.random.normal(loc=theta_current, scale=step_size)
-        alpha = min(1, np.exp(self.target(theta_proposed) - self.target(theta_current)))
+        alpha = min(
+            1,
+            np.exp(
+                self.target(theta_proposed, **kwargs)
+                - self.target(theta_current, **kwargs)
+            ),
+        )
         u = np.random.rand()
         if u <= alpha:
             theta_new = theta_proposed
@@ -46,7 +52,7 @@ class GaussianMetropolis(base_sampler.BaseSampler):
 
         return theta_new, a
 
-    def sample(self, iter, warmup, theta, step_size, lag=1):
+    def sample(self, iter, warmup, theta, step_size, lag=1, **kwargs):
         """
         Samples from the target distribution
 
@@ -74,11 +80,11 @@ class GaussianMetropolis(base_sampler.BaseSampler):
         acceptances = np.zeros(iter)
 
         for i in range(warmup):
-            theta, a = self._iterate(theta, step_size)
+            theta, a = self._iterate(theta, step_size, **kwargs)
 
         for i in range(iter):
             for _ in range(lag):
-                theta, a = self._iterate(theta, step_size)
+                theta, a = self._iterate(theta, step_size, **kwargs)
             samples[i] = theta
             acceptances[i] = a
 

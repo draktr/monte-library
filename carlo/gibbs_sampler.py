@@ -26,7 +26,7 @@ class GibbsSampler(base_sampler.BaseSampler):
         super().__init__()
         self.sampling_distributions = sampling_distributions
 
-    def _iterate(self, theta):
+    def _iterate(self, theta, **kwargs):
         """
         Single iteration of the sampler
 
@@ -39,13 +39,13 @@ class GibbsSampler(base_sampler.BaseSampler):
         theta_conditions = theta
         for i in range(len(theta)):
             theta_conditions.pop(i)
-            theta[i] = self.sampling_distributions[i](theta_conditions)
+            theta[i] = self.sampling_distributions[i](theta_conditions, **kwargs)
             theta_conditions = theta
         a = 1
 
         return theta, a
 
-    def sample(self, iter, warmup, theta, lag=1):
+    def sample(self, iter, warmup, theta, lag=1, **kwargs):
         """
         Samples from the target distribution
 
@@ -77,11 +77,11 @@ class GibbsSampler(base_sampler.BaseSampler):
         acceptances = np.zeros(iter)
 
         for i in range(warmup):
-            theta, a = self._iterate(theta)
+            theta, a = self._iterate(theta, **kwargs)
 
         for i in range(iter):
             for _ in range(lag):
-                theta, a = self._iterate(theta)
+                theta, a = self._iterate(theta, **kwargs)
             samples[i] = theta
             acceptances[i] = a
 

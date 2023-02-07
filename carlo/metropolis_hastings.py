@@ -22,7 +22,7 @@ class MetropolisHastings(base_sampler.BaseSampler):
         super().__init__()
         self.target = target
 
-    def _iterate(self, theta_current, proposal_sampler, proposal_density):
+    def _iterate(self, theta_current, proposal_sampler, proposal_density, **kwargs):
         """
         Single iteration of the sampler
 
@@ -42,7 +42,9 @@ class MetropolisHastings(base_sampler.BaseSampler):
         """
 
         theta_proposed = proposal_sampler(theta_current)
-        metropolis_ratio = self.target(theta_proposed) - self.target(theta_current)
+        metropolis_ratio = self.target(theta_proposed, **kwargs) - self.target(
+            theta_current, **kwargs
+        )
         hastings_ratio = proposal_density(
             theta_current, theta_proposed
         ) - proposal_density(theta_proposed, theta_current)
@@ -57,7 +59,9 @@ class MetropolisHastings(base_sampler.BaseSampler):
 
         return theta_new, a
 
-    def sample(self, iter, warmup, theta, proposal_sampler, proposal_density, lag=1):
+    def sample(
+        self, iter, warmup, theta, proposal_sampler, proposal_density, lag=1, **kwargs
+    ):
         """
         Samples from the target distribution
 
@@ -91,11 +95,15 @@ class MetropolisHastings(base_sampler.BaseSampler):
         acceptances = np.zeros(iter)
 
         for i in range(warmup):
-            theta, a = self._iterate(theta, proposal_sampler, proposal_density)
+            theta, a = self._iterate(
+                theta, proposal_sampler, proposal_density, **kwargs
+            )
 
         for i in range(iter):
             for _ in range(lag):
-                theta, a = self._iterate(theta, proposal_sampler, proposal_density)
+                theta, a = self._iterate(
+                    theta, proposal_sampler, proposal_density, **kwargs
+                )
             samples[i] = theta
             acceptances[i] = a
 
