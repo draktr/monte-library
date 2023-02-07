@@ -22,33 +22,30 @@ class MetropolisHastings(base_sampler.BaseSampler):
         super().__init__()
         self.target = target
 
-    def _iterate(
-        self, theta_current, proposal_sampler, proposal_density, **proposal_parameters
-    ):
+    def _iterate(self, theta_current, proposal_sampler, proposal_density):
         """
         Single iteration of the sampler
 
         :param theta_current: Vector of current values of parameter(s)
         :type theta_current: ndarray
-        :param proposal_sampler: Object that returns a random value from a
-        desired proposal distribution
-        :type proposal_sampler: `scipy.stats.rv_continuous`,
-        `scipy.stats.rv_discrete` or symilar type of sampler object
-        :param proposal_density: Probability density/mass function of the
-        proposal distribution. Must be the same distribution as in the sampler.
-        If utilizing `scipy.stats.rv_continuous` or `scipy.stats.rv_discrete`
-        sampler object `.pdf()`/`.pmf()` method can be conveniently used to get
-        density/mass functions
+        :param proposal_sampler: Function that returns a random value from a
+        desired proposal distribution given current value of parameter.
+        The only argument should be the sampling condition.
+        :type proposal_sampler: function
+        :param proposal_density: Function that returns probability density/mass
+        of the proposal distribution. Must be the same distribution as in
+        the sampler. First argument should be the value to be evaluated and
+        second should be the condition.
         :type proposal_density: function
         :return: New value of parameter vector, acceptance information
         :rtype: ndarray, int
         """
 
-        theta_proposed = proposal_sampler(theta_current, **proposal_parameters)
+        theta_proposed = proposal_sampler(theta_current)
         metropolis_ratio = self.target(theta_proposed) - self.target(theta_current)
         hastings_ratio = proposal_density(
-            theta_current, theta_proposed, **proposal_parameters
-        ) - proposal_density(theta_proposed, theta_current, **proposal_parameters)
+            theta_current, theta_proposed
+        ) - proposal_density(theta_proposed, theta_current)
         alpha = min(1, np.exp(metropolis_ratio + hastings_ratio))
         u = np.random.rand()
         if u <= alpha:
@@ -60,16 +57,7 @@ class MetropolisHastings(base_sampler.BaseSampler):
 
         return theta_new, a
 
-    def sample(
-        self,
-        iter,
-        warmup,
-        theta,
-        proposal_sampler,
-        proposal_density,
-        lag=1,
-        **proposal_parameters
-    ):
+    def sample(self, iter, warmup, theta, proposal_sampler, proposal_density, lag=1):
         """
         Samples from the target distribution
 
@@ -81,15 +69,14 @@ class MetropolisHastings(base_sampler.BaseSampler):
         :type warmup: int
         :param theta: Vector of initial values of parameter(s)
         :type theta: ndarray
-        :param proposal_sampler: Object that returns a random value from a
-        desired proposal distribution
-        :type proposal_sampler: `scipy.stats.rv_continuous`, `scipy.stats.rv_discrete` or
-        or symilar type of sampler object
-        :param proposal_density: Probability density/mass function of the
-        proposal distribution. Must be the same distribution as in the sampler.
-        If utilizing `scipy.stats.rv_continuous` or `scipy.stats.rv_discrete`
-        sampler object `.pdf()`/`.pmf()` method can be conveniently used to get
-        density/mass functions
+        :param proposal_sampler: Function that returns a random value from a
+        desired proposal distribution given current value of parameter.
+        The only argument should be the sampling condition.
+        :type proposal_sampler: function
+        :param proposal_density: Function that returns probability density/mass
+        of the proposal distribution. Must be the same distribution as in
+        the sampler. First argument should be the value to be evaluated and
+        second should be the condition.
         :type proposal_density: function
         :param lag: Sampler lag. Parameter specifying every how many iterations will the sample
         be recorded. Used to limit autocorrelation of the samples. If `lag=1`, every sample is
@@ -104,15 +91,11 @@ class MetropolisHastings(base_sampler.BaseSampler):
         acceptances = np.zeros(iter)
 
         for i in range(warmup):
-            theta, a = self._iterate(
-                theta, proposal_sampler, proposal_density, **proposal_parameters
-            )
+            theta, a = self._iterate(theta, proposal_sampler, proposal_density)
 
         for i in range(iter):
             for _ in range(lag):
-                theta, a = self._iterate(
-                    theta, proposal_sampler, proposal_density, **proposal_parameters
-                )
+                theta, a = self._iterate(theta, proposal_sampler, proposal_density)
             samples[i] = theta
             acceptances[i] = a
 

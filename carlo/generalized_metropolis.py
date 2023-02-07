@@ -23,21 +23,21 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         super().__init__()
         self.target = target
 
-    def _iterate(self, theta_current, proposal_sampler, **proposal_parameters):
+    def _iterate(self, theta_current, proposal_sampler):
         """
         Single iteration of the sampler
 
         :param theta_current: Vector of current values of parameter(s)
         :type theta_current: ndarray
-        :param proposal_sampler: Object that returns a random value from a
-        desired proposal distribution
-        :type proposal_sampler: `scipy.stats.rv_continuous`, `scipy.stats.rv_discrete`
-        or symilar type of sampler object's sampling method
+        :param proposal_sampler: Function that returns a random value from a
+        desired proposal distribution given current value of parameter.
+        The only argument should be the sampling condition.
+        :type proposal_sampler: function
         :return: New value of parameter vector, acceptance information
         :rtype: ndarray, int
         """
 
-        theta_proposed = proposal_sampler(theta_current, **proposal_parameters)
+        theta_proposed = proposal_sampler(theta_current)
         alpha = min(1, np.exp(self.target(theta_proposed) - self.target(theta_current)))
         u = np.random.rand()
         if u <= alpha:
@@ -49,9 +49,7 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
 
         return theta_new, a
 
-    def sample(
-        self, iter, warmup, theta, proposal_sampler, lag=1, **proposal_parameters
-    ):
+    def sample(self, iter, warmup, theta, proposal_sampler, lag=1):
         """
         Samples from the target distribution
 
@@ -63,10 +61,10 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         :type warmup: int
         :param theta: Vector of initial values of parameter(s)
         :type theta: ndarray
-        :param proposal_sampler: Object that returns a random value from a
-        desired proposal distribution
-        :type proposal_sampler: `scipy.stats.rv_continuous`, `scipy.stats.rv_discrete` or
-        or symilar type of sampler object
+        :param proposal_sampler: Function that returns a random value from a
+        desired proposal distribution given current value of parameter.
+        The only argument should be the sampling condition.
+        :type proposal_sampler: function
         :param lag: Sampler lag. Parameter specifying every how many iterations will the sample
         be recorded. Used to limit autocorrelation of the samples. If `lag=1`, every sample is
         recorded, if `lag=3` each third sample is recorded, etc. , defaults to 1
@@ -80,11 +78,11 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         acceptances = np.zeros(iter)
 
         for i in range(warmup):
-            theta, a = self._iterate(theta, proposal_sampler, **proposal_parameters)
+            theta, a = self._iterate(theta, proposal_sampler)
 
         for i in range(iter):
             for _ in range(lag):
-                theta, a = self._iterate(theta, proposal_sampler, **proposal_parameters)
+                theta, a = self._iterate(theta, proposal_sampler)
             samples[i] = theta
             acceptances[i] = a
 
