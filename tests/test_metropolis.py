@@ -20,31 +20,19 @@ def data():
     return true_theta, x, y
 
 
-def likelihood(param, x, y):
-    a = param[0]
-    b = param[1]
-    sd = param[2]
+def target(theta, x, y):
 
-    pred = a * x + b
-    singlelikelihoods = stats.norm(loc=pred, scale=sd).pdf(y)
-    prodlikelihood = np.prod(singlelikelihoods)
+    b0prior = stats.norm(loc=0, scale=30).logpdf(theta[0])
+    b1prior = stats.norm(loc=0, scale=30).logpdf(theta[1])
+    b2prior = stats.norm(loc=0, scale=30).logpdf(theta[2])
+    b3prior = stats.norm(loc=0, scale=30).logpdf(theta[3])
+    sdprior = stats.uniform(loc=0, scale=30).logpdf(theta[-1])
 
-    return prodlikelihood
+    mu = np.matmul(x, theta[0:-1])
+    singlelikelihoods = stats.norm(loc=mu, scale=theta[-1]).logpdf(y)
+    prodlikelihood = np.sum(singlelikelihoods)
 
-
-def prior(param):
-    a = param[0]
-    b = param[1]
-    sd = param[2]
-    aprior = stats.norm(loc=0, scale=30).pdf(a)
-    bprior = stats.norm(loc=0, scale=30).pdf(b)
-    sdprior = stats.norm(loc=0, scale=30).pdf(sd)
-
-    return aprior * bprior * sdprior
-
-
-def target(param, x, y):
-    return likelihood(param, x, y) * prior(param)
+    return b0prior + b1prior + b2prior + b3prior + sdprior + prodlikelihood
 
 
 @pytest.fixture
