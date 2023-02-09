@@ -34,6 +34,14 @@ def target(theta, x, y):
     return b0prior + b1prior + b2prior + b3prior + sdprior + prodlikelihood
 
 
+def skewnorm_proposal(location):
+    return stats.skewnorm(a=2, loc=location, scale=1).rvs(size=location.shape[0])
+
+
+def skewnorm_density(x, location):
+    return stats.skewnorm(a=2, loc=location, scale=1).pdf(x)
+
+
 @pytest.fixture
 def sampler(target):
     sampler = MetropolisHastings(target)

@@ -35,6 +35,10 @@ def target(theta, x, y):
     return b0prior + b1prior + b2prior + b3prior + sdprior + prodlikelihood
 
 
+def cauchy_proposal(location):
+    return stats.cauchy(loc=location, scale=1).rvs(size=location.shape[0])
+
+
 @pytest.fixture
 def gaussian_sampler(target):
     sampler = GaussianMetropolis(target)
