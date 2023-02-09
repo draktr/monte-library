@@ -4,16 +4,19 @@ from scipy import stats
 from carlo.hamiltonian_mc import HamiltonianMC
 
 
-def generate_data(true_param, n):
+@pytest.fixture
+def data():
 
+    true_theta = np.array([5, 10, 2, 2, 4])
+    n = 1000
     x = np.zeros((n, 4))
     x[:, 0] = np.repeat(1, n)
     x[:, 1:4] = stats.norm(loc=0, scale=1).rvs(size=(n, 3))
 
-    mu = np.matmul(x, true_param[0:-1])
-    y = stats.norm(loc=mu, scale=true_param[-1]).rvs(size=n)
+    mu = np.matmul(x, true_theta[0:-1])
+    y = stats.norm(loc=mu, scale=true_theta[-1]).rvs(size=n)
 
-    return x, y
+    return true_theta, x, y
 
 
 def target(x, y, theta):
