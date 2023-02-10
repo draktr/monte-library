@@ -19,35 +19,28 @@ def data():
     return true_theta, x, y
 
 
-def target(x, y, theta):
-    mu = np.matmul(x, theta[0:-1])
+def target(theta, x, y):
 
-    prioralpha = 0.001
-    priorbeta = 0.001
-
-    likelihood = stats.multivariate_normal(
-        mean=mu, cov=np.diag(np.repeat(theta[-1] ** 2, len(y)))
-    ).logpdf(y)
-    priorb = stats.multivariate_normal(
+    beta_prior = stats.multivariate_normal(
         mean=np.repeat(0, len(theta[0:-1])),
-        cov=np.diag(np.repeat(100, len(theta[0:-1]))),
+        cov=np.diag(np.repeat(30, len(theta[0:-1]))),
     ).logpdf(theta[0:-1])
-    priors2 = stats.gamma(a=prioralpha, scale=1 / priorbeta).logpdf(1 / theta[-1] ** 2)
-    posterior = likelihood * priorb * priors2
+    sd_prior = stats.uniform(loc=0, scale=30).logpdf(theta[-1])
 
-    return posterior
+    mu = np.matmul(x, theta[0:-1])
+    likelihood = np.sum(stats.norm(loc=mu, scale=theta[-1]).logpdf(y))
+
+    return np.sum(beta_prior) + sd_prior + likelihood
 
 
-def target_gradient(x, y, theta):
-    delta = 0.0001
+def target_gradient(theta, x, y):
+    delta = 0.0005
     gradient = np.zeros(len(theta))
 
     for k in range(len(theta)):
-        theta_hi = theta
-        theta_lo = theta
-        theta_hi[k] = theta[k] + delta
-        theta_lo[k] = theta[k] - delta
-        gradient[k] = (target(x, y, theta_hi) - target(x, y, theta_lo)) / (2 * delta)
+        theta_delta = theta
+        theta_delta[k] = theta[k] + delta
+        gradient[k] = (target(theta_delta, x, y) - target(theta, x, y)) / delta
 
     return gradient
 
@@ -59,11 +52,19 @@ def sampler(target, target_gradient):
     return sampler
 
 
-def test(sampler):
+def test(sampler, data):
 
-    true_param = np.array([5, 10, 2])
-    x, y = generate_data(true_param=true_param, n=50)
-    sampler.sample(iter=100000, warmup=1000, theta=0, step_size=0.1, lag=1, x=x, y=y)
+    sampler.sample(
+        iter=100000,
+        warmup=1000,
+        theta=0,
+        epsilon=0.1,
+        l=20,
+        metric=None,
+        lag=1,
+        x=data[1],
+        y=data[2],
+    )
 
-    mean = sampler.mean()
-    assert mean - true_param <= np.repeat(10 ** (-2), len(mean))
+    expected_theta = sampler.mean()
+    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))

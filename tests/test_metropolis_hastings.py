@@ -21,17 +21,16 @@ def data():
 
 def target(theta, x, y):
 
-    b0prior = stats.norm(loc=0, scale=30).logpdf(theta[0])
-    b1prior = stats.norm(loc=0, scale=30).logpdf(theta[1])
-    b2prior = stats.norm(loc=0, scale=30).logpdf(theta[2])
-    b3prior = stats.norm(loc=0, scale=30).logpdf(theta[3])
-    sdprior = stats.uniform(loc=0, scale=30).logpdf(theta[-1])
+    beta_prior = stats.multivariate_normal(
+        mean=np.repeat(0, len(theta[0:-1])),
+        cov=np.diag(np.repeat(30, len(theta[0:-1]))),
+    ).logpdf(theta[0:-1])
+    sd_prior = stats.uniform(loc=0, scale=30).logpdf(theta[-1])
 
     mu = np.matmul(x, theta[0:-1])
-    singlelikelihoods = stats.norm(loc=mu, scale=theta[-1]).logpdf(y)
-    prodlikelihood = np.sum(singlelikelihoods)
+    likelihood = np.sum(stats.norm(loc=mu, scale=theta[-1]).logpdf(y))
 
-    return b0prior + b1prior + b2prior + b3prior + sdprior + prodlikelihood
+    return np.sum(beta_prior) + sd_prior + likelihood
 
 
 def skewnorm_proposal(location):
@@ -48,21 +47,34 @@ def sampler(target):
     return sampler
 
 
-def test_gaussian_proposal(sampler):
+def test_gaussian_proposal(sampler, data):
 
-    true_param = np.array([5, 10, 2])
-    x, y = generate_data(true_param=true_param, n=50)
-    sampler.sample(iter=100000, warmup=1000, theta=0, step_size=0.1, lag=1)
+    sampler.sample(
+        iter=5000,
+        warmup=1000,
+        theta=np.array([0, 0, 0, 0, 1]),
+        step_size=1,
+        lag=1,
+        x=data[1],
+        y=data[2],
+    )
 
-    mean = sampler.mean()
-    assert mean - true_param <= np.repeat(10 ** (-2), len(mean))
+    expected_theta = sampler.mean()
+    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))
 
 
-def test_hastings_ratio(sampler):
+def test_hastings_ratio(sampler, data):
 
-    true_param = np.array([5, 10, 2])
-    x, y = generate_data(true_param=true_param, n=50)
-    sampler.sample(iter=100000, warmup=1000, theta=0, step_size=0.1, lag=1)
+    sampler.sample(
+        iter=5000,
+        warmup=1000,
+        theta=np.array([0, 0, 0, 0, 1]),
+        proposal_sampler=skewnorm_proposal,
+        proposal_density=skewnorm_density,
+        lag=1,
+        x=data[1],
+        y=data[2],
+    )
 
-    mean = sampler.mean()
-    assert mean - true_param <= np.repeat(10 ** (-2), len(mean))
+    expected_theta = sampler.mean()
+    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))

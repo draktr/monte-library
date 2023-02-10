@@ -29,11 +29,9 @@ def sampler(distributions):
     return sampler
 
 
-def test(sampler):
+def test(sampler, data):
 
-    true_param = np.array([5, 10, 2])
-    x, y = generate_data(true_param=true_param, n=50)
-    sampler.sample(iter=100000, warmup=1000, theta=0, step_size=0.1, lag=1)
+    sampler.sample(iter=100000, warmup=1000, theta=0, lag=1, x=data[1], y=data[2])
 
-    mean = sampler.mean()
-    assert mean - true_param <= np.repeat(10 ** (-2), len(mean))
+    expected_theta = sampler.mean()
+    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))
