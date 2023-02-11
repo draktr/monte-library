@@ -36,11 +36,8 @@ class GibbsSampler(base_sampler.BaseSampler):
         :rtype: ndarray, int
         """
 
-        theta_conditions = theta
-        for i in range(len(theta)):
-            theta_conditions.pop(i)
-            theta[i] = self.sampling_distributions[i](theta_conditions, **kwargs)
-            theta_conditions = theta
+        for i in range(theta.shape[0]):
+            theta[i] = self.sampling_distributions[i](theta, **kwargs)
         a = 1
 
         return theta, a
@@ -68,12 +65,12 @@ class GibbsSampler(base_sampler.BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        if len(theta) != len(self.sampling_distributions):
+        if theta.shape[0] != self.sampling_distributions.shape[0]:
             raise ValueError(
                 "There should be one and only one parameter per sampling distribution"
             )
 
-        samples = np.zeros(iter)
+        samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)
 
         for i in range(warmup):
