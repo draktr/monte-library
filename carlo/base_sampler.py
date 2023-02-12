@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from statsmodels.graphics.tsaplots import plot_acf
 
 
 class BaseSampler:
@@ -153,5 +154,20 @@ class BaseSampler:
         fig.suptitle("Parameter Traceplots")
         if save is True:
             plt.savefig("parameter_traceplots.png", dpi=300)
+        if show is True:
+            plt.show()
+
+    def plot_acf(self, figsize=(12, 8), show=True, save=False, **kwargs):
+        dim = self.samples.shape[1]
+        fig = plt.figure(figsize=figsize, constrained_layout=True)
+        axs = [plt.subplot(dim, 1, i + 1) for i in range(dim)]
+        for i in range(dim):
+            plot_acf(self.samples[:, i], ax=axs[i], **kwargs)
+            axs[i].set_xlabel("iteration")
+            axs[i].set_ylabel(f"theta_{i}")
+            axs[i].set_title(f"theta_{i} ACF")
+        fig.suptitle("Autocorrelation Plot")
+        if save is True:
+            plt.savefig("parameter_acf.png", dpi=300)
         if show is True:
             plt.show()
