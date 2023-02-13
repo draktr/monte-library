@@ -8,6 +8,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from statsmodels.graphics.tsaplots import plot_acf
+from statsmodels.tsa.stattools import acf
 
 
 class BaseSampler:
@@ -169,5 +170,39 @@ class BaseSampler:
         fig.suptitle("Autocorrelation Plot")
         if save is True:
             plt.savefig("parameter_acf.png", dpi=300)
+        if show is True:
+            plt.show()
+
+    def ergodic_mean(self):
+        ergodic_mean = np.zeros(self.samples.shape[0])
+        for i in range(self.samples.shape[0]):
+            ergodic_mean[i] = np.mean(self.samples[:i], axis=0)
+        return ergodic_mean
+
+    def plot_ergodic_mean(self, figsize=(12, 8), show=True, save=False, **kwargs):
+        """
+        Plots ergodic mean(s) (for each parameter)
+
+        :param figsize: Size of the total figure (all plots together), defaults to (12, 8)
+        :type figsize: tuple, optional
+        :param show: Whether to show the figure at runtime, defaults to True
+        :type show: bool, optional
+        :param save: Whether to save the figure as `.png` file, defaults to False
+        :type save: bool, optional
+        """
+
+        ergodic_mean = self.ergodic_mean()
+
+        dim = self.samples.shape[1]
+        fig = plt.figure(figsize=figsize, constrained_layout=True)
+        axs = [plt.subplot(dim, 1, i + 1) for i in range(dim)]
+        for i in range(dim):
+            axs[i].plot(ergodic_mean[:, i], **kwargs)
+            axs[i].set_xlabel("iteration")
+            axs[i].set_ylabel(f"theta_{i}")
+            axs[i].set_title(f"theta_{i} ergodic mean")
+        fig.suptitle("Parameter erogidc means")
+        if save is True:
+            plt.savefig("ergodic_means.png", dpi=300)
         if show is True:
             plt.show()
