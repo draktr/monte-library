@@ -67,6 +67,31 @@ class BaseSampler:
 
         return np.mean(self.acceptances)
 
+    def quantiles(self, quantiles=np.array([0.25, 0.5, 0.75])):
+        """
+        Calculates posterior quantiles.
+
+        :param quantiles: Quantiles, defaults to np.array([0.25, 0.5, 0.75])
+        :type quantiles: ndarray, optional
+        :return: Parameter values at quantiles
+        :rtype: ndarray
+        """
+
+        return np.quantile(self.samples, quantiles)
+
+    def credible_interval(self, ci=0.9):
+        """
+        Calculates :math:`100*ci%` credible interval for each parameter
+
+        :param ci: Credible interval in decimal, defaults to 0.9
+        :type ci: float, optional
+        :return: Parameter values at credible interval
+        :rtype: ndarray
+        """
+
+        tail = (1 - ci) / 2
+        return np.quantile(self.samples, np.array([0 + tail, 1 - tail]))
+
     def plot_histogram(self, figsize=(12, 8), bins=100, show=True, save=False):
         """
         Plots histogram(s) (for each parameter) of posterior. Visually estimates
@@ -159,6 +184,17 @@ class BaseSampler:
             plt.show()
 
     def plot_acf(self, figsize=(12, 8), show=True, save=False, **kwargs):
+        """
+        Plots autocorrelation function values of the parameter samples
+
+        :param figsize: Size of the total figure (all plots together), defaults to (12, 8)
+        :type figsize: tuple, optional
+        :param show: Whether to show the figure at runtime, defaults to True
+        :type show: bool, optional
+        :param save: Whether to save the figure as `.png` file, defaults to False
+        :type save: bool, optional
+        """
+
         dim = self.samples.shape[1]
         fig = plt.figure(figsize=figsize, constrained_layout=True)
         axs = [plt.subplot(dim, 1, i + 1) for i in range(dim)]
@@ -174,6 +210,14 @@ class BaseSampler:
             plt.show()
 
     def ergodic_mean(self):
+        """
+        Calculates ergodic mean(s) for each parameter. Ergodic mean refers
+        to the mean value until the current iteration
+
+        :return: Ergodic mean
+        :rtype: ndarray
+        """
+
         ergodic_mean = np.zeros(self.samples.shape[0])
         for i in range(self.samples.shape[0]):
             ergodic_mean[i] = np.mean(self.samples[:i], axis=0)
@@ -206,3 +250,21 @@ class BaseSampler:
             plt.savefig("ergodic_means.png", dpi=300)
         if show is True:
             plt.show()
+
+    def ess(self):
+        """
+        Calculates effective sample size (for each parameter) as per
+        Kass et al (1998) and Robert and Casella (2004; pg.500)
+
+        :return: Effective sample size
+        :rtype: ndarray
+        """
+
+        dim = self.samples.shape[1]
+        n = self.samples.shape[0]
+        chain_acf = np.zeros((n, dim))
+        ess = np.zeros(dim)
+        for i in range(dim):
+            chain_acf[:, i] = acf(self.samples[:, i])
+            ess[i] = n / (1 + 2 * np.sum(chain_acf[1:]))
+        return ess
