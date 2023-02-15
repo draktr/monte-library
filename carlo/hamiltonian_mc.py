@@ -9,20 +9,20 @@ from carlo import base_sampler
 
 
 class HamiltonianMC(base_sampler.BaseSampler):
-    def __init__(self, target_lp, target_lp_gradient) -> None:
+    def __init__(self, log_posterior, log_posterior_gradient) -> None:
         """
         Initializes the problem sampler object
 
-        :param target_lp: Log-probability of the target distribution to be sampled from
-        :type target_lp: function
-        :param target_lp_gradient: Log-probability of the gradient of the target
+        :param log_posterior: Log-probability of the target distribution to be sampled from
+        :type log_posterior: callable
+        :param log_posterior_gradient: Log-probability of the gradient of the target
         distribution to be sampled from
-        :type target_lp_gradient: function
+        :type log_posterior_gradient: callable
         """
 
         super().__init__()
-        self.target_lp = target_lp
-        self.target_lp_gradient = target_lp_gradient
+        self.log_posterior = log_posterior
+        self.log_posterior_gradient = log_posterior_gradient
 
     def _hamiltonian(self, theta, rho, inverse_metric, **kwargs):
         """
@@ -38,7 +38,7 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :rtype: float
         """
 
-        return 0.5 * np.dot(np.matmul(rho, inverse_metric), rho) - self.target_lp(
+        return 0.5 * np.dot(np.matmul(rho, inverse_metric), rho) - self.log_posterior(
             theta, **kwargs
         )
 
@@ -98,12 +98,12 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        rho -= 0.5 * epsilon * -self.target_lp_gradient(theta, **kwargs)
+        rho -= 0.5 * epsilon * -self.log_posterior_gradient(theta, **kwargs)
         for _ in range(l - 1):
             theta += epsilon * np.matmul(inverse_metric, rho)
-            rho -= epsilon * -self.target_lp_gradient(theta, **kwargs)
+            rho -= epsilon * -self.log_posterior_gradient(theta, **kwargs)
         theta += epsilon * np.matmul(inverse_metric, rho)
-        rho -= 0.5 * epsilon * -self.target_lp_gradient(theta, **kwargs)
+        rho -= 0.5 * epsilon * -self.log_posterior_gradient(theta, **kwargs)
 
         return theta, rho
 
@@ -126,17 +126,10 @@ class HamiltonianMC(base_sampler.BaseSampler):
         """
 
         rho_current = np.random.multivariate_normal(
-            mean=np.zeros(theta_current.shape[0]),
-            cov=metric,
-            size=theta_current.shape[0],
+            mean=np.zeros(theta_current.shape[0]), cov=metric
         )
         theta_proposed, rho_updated = self._leapfrog(
-            theta_current.copy(),
-            rho_current.copy(),
-            epsilon,
-            l,
-            inverse_metric,
-            **kwargs
+            theta_current, rho_current, epsilon, l, inverse_metric, **kwargs
         )
 
         alpha = self._acceptance(
@@ -159,7 +152,7 @@ class HamiltonianMC(base_sampler.BaseSampler):
 
     def sample(self, iter, warmup, theta, epsilon, l, metric=None, lag=1, **kwargs):
         """
-        Samples from the target distributions
+        Samples from the log_posterior distribution
 
         :param iter: Number of iterations of the algorithm
         :type iter: int
@@ -184,8 +177,9 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        samples = np.zeros(iter)
+        samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)
+        lp = np.zeros(iter)
         if metric is None:
             metric = np.identity(theta.shape[0])
         inverse_metric = np.linalg.inv(metric)
@@ -202,8 +196,10 @@ class HamiltonianMC(base_sampler.BaseSampler):
                 )
             samples[i] = theta
             acceptances[i] = a
+            lp[i] = self.log_posterior(theta, **kwargs)
 
         self.samples = samples
         self.acceptances = acceptances
+        self.lp = lp
 
         return samples, acceptances
