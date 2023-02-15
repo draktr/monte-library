@@ -8,18 +8,18 @@ from carlo import base_sampler
 
 
 class GaussianMetropolis(base_sampler.BaseSampler):
-    def __init__(self, target) -> None:
+    def __init__(self, log_posterior) -> None:
         """
         Initializes the problem sampler object.
 
-        :param target: Target distribution to be sampled from. This should either be
-        posterior distribution of the model or a product of prior distribution and
-        likelihood.
-        :type target: function
+        :param log_posterior: Log-probability of the target distribution to be
+        sampled from. This should either be posterior distribution of the model
+        or a product of prior distribution and likelihood.
+        :type log_posterior: callable
         """
 
         super().__init__()
-        self.target = target
+        self.log_posterior = log_posterior
 
     def _iterate(self, theta_current, step_size, **kwargs):
         """
@@ -38,8 +38,8 @@ class GaussianMetropolis(base_sampler.BaseSampler):
         alpha = min(
             1,
             np.exp(
-                self.target(theta_proposed, **kwargs)
-                - self.target(theta_current, **kwargs)
+                self.log_posterior(theta_proposed, **kwargs)
+                - self.log_posterior(theta_current, **kwargs)
             ),
         )
         u = np.random.rand()
@@ -54,7 +54,7 @@ class GaussianMetropolis(base_sampler.BaseSampler):
 
     def sample(self, iter, warmup, theta, step_size, lag=1, **kwargs):
         """
-        Samples from the target distribution
+        Samples from the log_posterior distribution
 
         :param iter: Number of iterations of the algorithm
         :type iter: int
@@ -76,8 +76,9 @@ class GaussianMetropolis(base_sampler.BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        samples = np.zeros(iter)
+        samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)
+        lp = np.zeros(iter)
 
         for i in range(warmup):
             theta, a = self._iterate(theta, step_size, **kwargs)
@@ -87,8 +88,10 @@ class GaussianMetropolis(base_sampler.BaseSampler):
                 theta, a = self._iterate(theta, step_size, **kwargs)
             samples[i] = theta
             acceptances[i] = a
+            lp[i] = self.log_posterior(theta, **kwargs)
 
         self.samples = samples
         self.acceptances = acceptances
+        self.lp = lp
 
         return samples, acceptances

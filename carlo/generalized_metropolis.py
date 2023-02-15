@@ -10,18 +10,18 @@ from carlo import base_sampler
 
 
 class GeneralizedMetropolis(base_sampler.BaseSampler):
-    def __init__(self, target) -> None:
+    def __init__(self, log_posterior) -> None:
         """
         Initializes the problem sampler object.
 
-        :param target: Target distribution to be sampled from. This should either be
-        posterior distribution of the model or a product of prior distribution and
-        likelihood.
-        :type target: function
+        :param log_posterior: Log-probability of the target distribution to be
+        sampled from. This should either be posterior distribution of the model
+        or a product of prior distribution and likelihood.
+        :type log_posterior: callable
         """
 
         super().__init__()
-        self.target = target
+        self.log_posterior = log_posterior
 
     def _iterate(self, theta_current, proposal_sampler, **kwargs):
         """
@@ -31,8 +31,8 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         :type theta_current: ndarray
         :param proposal_sampler: Function that returns a random value from a
         desired proposal distribution given current value of parameter.
-        The only argument should be the sampling condition.
-        :type proposal_sampler: function
+        The only argument should be the sampling distribution location.
+        :type proposal_sampler: callable
         :return: New value of parameter vector, acceptance information
         :rtype: ndarray, int
         """
@@ -41,8 +41,8 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         alpha = min(
             1,
             np.exp(
-                self.target(theta_proposed, **kwargs)
-                - self.target(theta_current, **kwargs)
+                self.log_posterior(theta_proposed, **kwargs)
+                - self.log_posterior(theta_current, **kwargs)
             ),
         )
         u = np.random.rand()
@@ -55,9 +55,9 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
 
         return theta_new, a
 
-    def sample(self, iter, warmup, theta, proposal_sampler, lag=1, **kwargs):
+    def sample(self, iter, warmup, theta, proposal_sampler=None, lag=1, **kwargs):
         """
-        Samples from the target distribution
+        Samples from the log_posterior distribution
 
         :param iter: Number of iterations of the algorithm
         :type iter: int
@@ -69,8 +69,8 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         :type theta: ndarray
         :param proposal_sampler: Function that returns a random value from a
         desired proposal distribution given current value of parameter.
-        The only argument should be the sampling condition.
-        :type proposal_sampler: function
+        The only argument should be the sampling distribution location.
+        :type proposal_sampler: callable
         :param lag: Sampler lag. Parameter specifying every how many iterations will the sample
         be recorded. Used to limit autocorrelation of the samples. If `lag=1`, every sample is
         recorded, if `lag=3` each third sample is recorded, etc. , defaults to 1
@@ -80,8 +80,16 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        samples = np.zeros(iter)
+        samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)
+        lp = np.zeros(iter)
+
+        if proposal_sampler is None:
+
+            def sampler(location):
+                return np.random.normal(loc=location, scale=1)
+
+            proposal_sampler = sampler
 
         for i in range(warmup):
             theta, a = self._iterate(theta, proposal_sampler, **kwargs)
@@ -91,8 +99,10 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
                 theta, a = self._iterate(theta, proposal_sampler, **kwargs)
             samples[i] = theta
             acceptances[i] = a
+            lp[i] = self.log_posterior(theta, **kwargs)
 
         self.samples = samples
         self.acceptances = acceptances
+        self.lp = lp
 
         return samples, acceptances
