@@ -24,8 +24,9 @@ class BaseSampler:
 
         self.samples = None
         self.acceptances = None
+        self.lp = None
 
-    def save_samples(self, path=None):
+    def save_samples(self, parameter_names=None, path=None):
         """
         Exports samples as `.csv` file.
 
@@ -33,8 +34,32 @@ class BaseSampler:
         the working directory, defaults to None
         :type path: str, optional
         """
+        if parameter_names is None:
+            column_names = np.array(
+                np.concatenate(
+                    (
+                        np.array(["lp"]),
+                        np.array([f"theta_{i}" for i in range(self.samples.shape[1])]),
+                    ),
+                    axis=None,
+                )
+            )
+        else:
+            if parameter_names.shape[0] != self.sample.shape[1]:
+                raise ValueError(
+                    "There should be one and only one parameter name per parameter"
+                )
+            else:
+                column_names = np.array(
+                    np.concatenate((np.array(["lp"]), parameter_names), axis=None)
+                )
 
-        pd.DataFrame(self.samples).to_csv(path)
+        pd.DataFrame(
+            np.concatenate(
+                (np.reshape(self.lp, (self.lp.shape[0], 1)), self.samples), axis=1
+            ),
+            columns=column_names,
+        ).to_csv(path)
 
     def mean(self):
         """
