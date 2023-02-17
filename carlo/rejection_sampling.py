@@ -30,9 +30,9 @@ def rejection_sampling(pdf, lower_bounds, upper_bounds, n):
     if lower_bounds.shape[0] != upper_bounds.shape[0]:
         raise ValueError("Lower and upper bounds are of different dimensions.")
 
-    x = np.random.uniform(lower_bounds, upper_bounds, (n, lower_bounds.shape[0]))
-    p = np.zeros(n)
+    samples = np.random.uniform(lower_bounds, upper_bounds, (n, lower_bounds.shape[0]))
+    densities = np.zeros(n)
     for i in range(n):
-        p[i] = pdf(x[i])
+        densities[i] = pdf(samples[i])
     u = np.random.uniform(0, 1, n)
-    return p[p < u]
+    return samples[u < densities]
