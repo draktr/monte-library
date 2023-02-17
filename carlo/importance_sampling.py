@@ -3,7 +3,7 @@ Module that contains function performing importance sampling.
 """
 
 
-def importance_sampling(importance_sampler, improtance_density, target_density, n):
+def importance_sampling(importance_sampler, importance_density, target_density, n):
     """
     Performs importance sampling from `target_density` distribution using `importance`
     distribution as proposal distribution.
@@ -11,8 +11,8 @@ def importance_sampling(importance_sampler, improtance_density, target_density, 
     :param importance_sampler: Function that samples from our importance distribution.
     Should be a distribution that is easy to sample from.
     :type importance_sampler: callable
-    :param improtance_density: Probability density/mass function of importance distribution.
-    :type improtance_density: callble
+    :param importance_density: Probability density/mass function of importance distribution.
+    :type importance_density: callable
     :param target_density: Probability density/mass function of the distribution we want
     to have samples from. Intended to be a distribution that is difficult to sample from.
     :type target_density: callable
@@ -23,8 +23,11 @@ def importance_sampling(importance_sampler, improtance_density, target_density, 
     :rtype: ndarray
     """
 
-    x_proposed = importance_sampler(n)
-    w = target_density(x_proposed) / improtance_density(x_proposed)
-    x = x_proposed * w
+    samples_proposed = importance_sampler(n)
+    weights = target_density(samples_proposed) / importance_density(samples_proposed)
+    try:
+        samples = samples_proposed * weights.reshape(n, 1)
+    except:
+        samples = samples_proposed * weights
 
-    return x
+    return samples
