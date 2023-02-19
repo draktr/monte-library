@@ -27,7 +27,7 @@ def importance_sampling(importance_sampler, importance_density, target_density, 
     weights = target_density(samples_proposed) / importance_density(samples_proposed)
     try:
         samples = samples_proposed * weights.reshape(n, 1)
-    except:
+    except Exception:
         samples = samples_proposed * weights
 
     return samples
