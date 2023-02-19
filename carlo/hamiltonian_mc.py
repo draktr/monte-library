@@ -42,44 +42,6 @@ class HamiltonianMC(base_sampler.BaseSampler):
             theta, **kwargs
         )
 
-    def _acceptance(
-        self,
-        theta_proposed,
-        rho_updated,
-        theta_current,
-        rho_current,
-        inverse_metric,
-        **kwargs
-    ):
-        """
-        Metropolis acceptance criterion
-
-        :param theta_proposed: Proposed parameter vector
-        :type theta_proposed: ndarray
-        :param rho_updated: Updated momentum vector
-        :type rho_updated: ndarray
-        :param theta_current: Current parameter vector
-        :type theta_current: ndarray
-        :param rho_current: Current momentum vector
-        :type rho_current: ndarray
-        :return: Acceptance probability
-        :rtype: float
-        """
-
-        return min(
-            1,
-            np.exp(
-                (
-                    self._hamiltonian(
-                        theta_proposed, rho_updated, inverse_metric, **kwargs
-                    )
-                    - self._hamiltonian(
-                        theta_current, rho_current, inverse_metric, **kwargs
-                    )
-                )
-            ),
-        )
-
     def _leapfrog(self, theta, rho, epsilon, l, inverse_metric, **kwargs):
         """
         Leapfrom integrator used to simulate the movement of the particle
@@ -97,14 +59,12 @@ class HamiltonianMC(base_sampler.BaseSampler):
         :return: Parameter and momentum vectors
         :rtype: ndarray, ndarray
         """
-
-        rho -= 0.5 * epsilon * -self.log_posterior_gradient(theta, **kwargs)
+        rho -= 0.5 * epsilon * self.log_posterior_gradient(theta, **kwargs)
         for _ in range(l - 1):
             theta += epsilon * np.matmul(inverse_metric, rho)
-            rho -= epsilon * -self.log_posterior_gradient(theta, **kwargs)
+            rho -= epsilon * self.log_posterior_gradient(theta, **kwargs)
         theta += epsilon * np.matmul(inverse_metric, rho)
-        rho -= 0.5 * epsilon * -self.log_posterior_gradient(theta, **kwargs)
-
+        rho -= 0.5 * epsilon * self.log_posterior_gradient(theta, **kwargs)
         return theta, rho
 
     def _iterate(self, theta_current, epsilon, l, metric, inverse_metric, **kwargs):
@@ -129,18 +89,29 @@ class HamiltonianMC(base_sampler.BaseSampler):
             mean=np.zeros(theta_current.shape[0]), cov=metric
         )
         theta_proposed, rho_updated = self._leapfrog(
-            theta_current, rho_current, epsilon, l, inverse_metric, **kwargs
+            theta_current.copy(),
+            rho_current.copy(),
+            epsilon,
+            l,
+            inverse_metric,
+            **kwargs,
         )
 
-        alpha = self._acceptance(
-            theta_proposed,
-            rho_updated,
-            theta_current,
-            rho_current,
-            inverse_metric,
-            **kwargs
+        alpha = (
+            min(
+                0,
+                -(
+                    self._hamiltonian(
+                        theta_proposed, rho_updated, inverse_metric, **kwargs
+                    )
+                    - self._hamiltonian(
+                        theta_current, rho_current, inverse_metric, **kwargs
+                    )
+                ),
+            ),
         )
-        u = np.random.rand()
+
+        u = np.log(np.random.random())
         if u <= alpha:
             theta_new = theta_proposed
             a = 1
