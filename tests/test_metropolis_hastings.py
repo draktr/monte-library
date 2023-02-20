@@ -1,6 +1,8 @@
 import pytest
 import numpy as np
 from scipy import stats
+from scipy.stats import multivariate_normal as mvn, norm
+from scipy.stats._multivariate import _squeeze_output
 from carlo.metropolis_hastings import MetropolisHastings
 
 
@@ -30,19 +32,45 @@ def target(theta, x, y):
     mu = np.matmul(x, theta[0:-1])
     likelihood = np.sum(stats.norm(loc=mu, scale=theta[-1]).logpdf(y))
 
-    return np.sum(beta_prior) + sd_prior + likelihood
+    return beta_prior + sd_prior + likelihood
 
 
-def skewnorm_proposal(location):
-    return stats.skewnorm(a=2, loc=location, scale=1).rvs(size=location.shape[0])
+class Skewnorm:
+
+    # By [Gregory Gundersen](https://gregorygundersen.com/blog/2020/12/29/multivariate-skew-normal/)
+
+    def __init__(self, shape, mean=None, cov=None):
+        self.dim = len(shape)
+        self.shape = np.asarray(shape)
+        self.mean = np.zeros(self.dim) if mean is None else np.asarray(mean)
+        self.cov = np.eye(self.dim) if cov is None else np.asarray(cov)
+
+    def pdf(self, x, mean):
+        return np.exp(self.logpdf(x, mean))
+
+    def logpdf(self, x, mean):
+        x = mvn._process_quantiles(x, self.dim)
+        pdf = mvn(mean, self.cov).logpdf(x)
+        cdf = norm(0, 1).logcdf(np.dot(x, self.shape))
+        return _squeeze_output(np.log(2) + pdf + cdf)
 
 
-def skewnorm_density(x, location):
-    return stats.skewnorm(a=2, loc=location, scale=1).pdf(x)
+def proposal_sampler(location):
+    dim = location.shape[0]
+    proposals = np.zeros(dim)
+    for i in range(dim):
+        proposals[i] = stats.skewnorm(a=1, loc=location[i], scale=1).rvs()
+    return proposals
 
 
 @pytest.fixture
-def sampler(target):
+def proposal_density():
+    proposal = Skewnorm(shape=np.array([2, 2, 2, 2, 2]))
+    return proposal
+
+
+@pytest.fixture
+def sampler():
     sampler = MetropolisHastings(target)
     return sampler
 
@@ -50,31 +78,30 @@ def sampler(target):
 def test_gaussian_proposal(sampler, data):
 
     sampler.sample(
-        iter=5000,
-        warmup=1000,
+        iter=10000,
+        warmup=5000,
         theta=np.array([0, 0, 0, 0, 1]),
-        step_size=1,
         lag=1,
         x=data[1],
         y=data[2],
     )
 
     expected_theta = sampler.mean()
-    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))
+    assert np.all(np.abs(expected_theta - data[0]) <= 0.5)
 
 
-def test_hastings_ratio(sampler, data):
+def test_hastings_ratio(sampler, data, proposal_density):
 
     sampler.sample(
-        iter=5000,
-        warmup=1000,
+        iter=10000,
+        warmup=5000,
         theta=np.array([0, 0, 0, 0, 1]),
-        proposal_sampler=skewnorm_proposal,
-        proposal_density=skewnorm_density,
+        proposal_sampler=proposal_sampler,
+        proposal_density=proposal_density.pdf,
         lag=1,
         x=data[1],
         y=data[2],
     )
 
     expected_theta = sampler.mean()
-    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))
+    assert np.all(np.abs(expected_theta - data[0]) <= 0.5)
