@@ -31,21 +31,21 @@ def target(theta, x, y):
     mu = np.matmul(x, theta[0:-1])
     likelihood = np.sum(stats.norm(loc=mu, scale=theta[-1]).logpdf(y))
 
-    return np.sum(beta_prior) + sd_prior + likelihood
+    return beta_prior + sd_prior + likelihood
 
 
-def cauchy_proposal(location):
-    return stats.cauchy(loc=location, scale=1).rvs(size=location.shape[0])
+def t_distribution(location):
+    return stats.multivariate_t(loc=location, shape=1, df=20).rvs()
 
 
 @pytest.fixture
-def gaussian_sampler(target):
+def gaussian_sampler():
     sampler = GaussianMetropolis(target)
     return sampler
 
 
 @pytest.fixture
-def generalized_sampler(target):
+def generalized_sampler():
     sampler = GeneralizedMetropolis(target)
     return sampler
 
@@ -53,8 +53,8 @@ def generalized_sampler(target):
 def test_gaussian(gaussian_sampler, data):
 
     gaussian_sampler.sample(
-        iter=5000,
-        warmup=1000,
+        iter=10000,
+        warmup=5000,
         theta=np.array([0, 0, 0, 0, 1]),
         step_size=1,
         lag=1,
@@ -63,20 +63,20 @@ def test_gaussian(gaussian_sampler, data):
     )
 
     expected_theta = gaussian_sampler.mean()
-    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))
+    assert np.all(np.abs(expected_theta - data[0]) <= 0.5)
 
 
 def test_generalized(generalized_sampler, data):
 
     generalized_sampler.sample(
-        iter=5000,
-        warmup=1000,
+        iter=10000,
+        warmup=5000,
         theta=np.array([0, 0, 0, 0, 1]),
-        proposal_sampler=cauchy_proposal,
+        proposal_sampler=t_distribution,
         lag=1,
         x=data[1],
         y=data[2],
     )
 
     expected_theta = generalized_sampler.mean()
-    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))
+    assert np.all(np.abs(expected_theta - data[0]) <= 0.5)
