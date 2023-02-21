@@ -6,6 +6,7 @@ proposals are accepted.
 """
 
 import numpy as np
+import carlo.checks
 from carlo import base_sampler
 
 
@@ -24,6 +25,9 @@ class GibbsSampler(base_sampler.BaseSampler):
         """
 
         super().__init__()
+        sampling_distributions = carlo.checks._check_sampling_distributions(
+            sampling_distributions
+        )
         self.sampling_distributions = sampling_distributions
 
     def _iterate(self, theta, **kwargs):
@@ -44,7 +48,7 @@ class GibbsSampler(base_sampler.BaseSampler):
 
     def sample(self, iter, warmup, theta, lag=1, **kwargs):
         """
-        Samples from the target distribution
+        Samples from the posterior distribution
 
         :param iter: Number of iterations of the algorithm
         :type iter: int
@@ -65,10 +69,9 @@ class GibbsSampler(base_sampler.BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        if theta.shape[0] != self.sampling_distributions.shape[0]:
-            raise ValueError(
-                "There should be one and only one parameter per sampling distribution"
-            )
+        carlo.checks._check_parameters(iter=iter, warmup=warmup, lag=lag)
+        theta = carlo.checks._check_theta(theta)
+        carlo.checks._check_dimensions(theta, self.sampling_distributions)
 
         samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)

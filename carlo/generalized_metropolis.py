@@ -6,6 +6,7 @@ Metropolis-Hastings algorithm should be used which can be found in `metropolis_h
 """
 
 import numpy as np
+import carlo.checks
 from carlo import base_sampler
 
 
@@ -21,6 +22,7 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         """
 
         super().__init__()
+        carlo.checks._check_posterior(log_posterior)
         self.log_posterior = log_posterior
 
     def _iterate(self, theta_current, proposal_sampler, **kwargs):
@@ -79,6 +81,11 @@ class GeneralizedMetropolis(base_sampler.BaseSampler):
         numpy array of acceptance information for every algorithm iteration.
         :rtype: ndarray, ndarray
         """
+
+        carlo.checks._check_parameters(
+            iter=iter, warmup=warmup, proposal_sampler=proposal_sampler, lag=lag
+        )
+        theta = carlo.checks._check_theta(theta)
 
         samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)

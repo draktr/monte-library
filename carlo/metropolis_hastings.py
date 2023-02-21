@@ -5,7 +5,7 @@ proposal distribution can be any arbitrary distribution including non-symetrical
 """
 
 import numpy as np
-from scipy import stats
+import carlo.checks
 from carlo import base_sampler
 
 
@@ -21,6 +21,7 @@ class MetropolisHastings(base_sampler.BaseSampler):
         """
 
         super().__init__()
+        carlo.checks._check_posterior(log_posterior)
         self.log_posterior = log_posterior
 
     def _iterate(self, theta_current, proposal_sampler, proposal_density, **kwargs):
@@ -99,24 +100,21 @@ class MetropolisHastings(base_sampler.BaseSampler):
         :rtype: ndarray, ndarray
         """
 
+        carlo.checks._check_parameters(
+            iter=iter,
+            warmup=warmup,
+            proposal_sampler=proposal_sampler,
+            proposal_density=proposal_density,
+            lag=lag,
+        )
+        theta = carlo.checks._check_theta(theta)
+        proposal_sampler, proposal_density = carlo.checks._check_proposal(
+            proposal_sampler, proposal_density
+        )
+
         samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)
         lp = np.zeros(iter)
-
-        if proposal_sampler is None and proposal_density is None:
-
-            def sampler(location):
-                return stats.multivariate_normal(
-                    mean=location, cov=np.identity(location.shape[0])
-                ).rvs()
-
-            def density(x, location):
-                return stats.multivariate_normal(
-                    mean=location, cov=np.identity(location.shape[0])
-                ).pdf(x)
-
-            proposal_sampler = sampler
-            proposal_density = density
 
         for i in range(warmup):
             theta, a = self._iterate(
@@ -137,3 +135,13 @@ class MetropolisHastings(base_sampler.BaseSampler):
         self.lp = lp
 
         return samples, acceptances
+
+
+a = None
+
+if not (callable(a) or None):
+    print("its something else")
+
+
+if not callable(a) and not isinstance(a, type(None)):
+    print("its something else")
