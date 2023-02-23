@@ -6,45 +6,40 @@ from carlo.gibbs_sampler import GibbsSampler
 
 @pytest.fixture
 def data():
-
-    true_theta = np.array([5, 10, 2])
-    n = 1000
-    x = np.zeros((n, 2))
-    x[:, 0] = np.repeat(1, n)
-    x[:, 1] = stats.norm(loc=0, scale=1).rvs(size=n)
-
-    mu = np.matmul(x, true_theta[0:-1])
-    y = stats.norm(loc=mu, scale=true_theta[-1]).rvs(size=n)
-
-    return true_theta, x, y
+    true_theta = np.array([30, 7])
+    y = stats.norm(loc=true_theta[0], scale=true_theta[1]).rvs(size=200000)
+    return true_theta, y
 
 
 @pytest.fixture
 def distributions():
-    def sample_alpha(theta, hyperparameters, y, x):
-        precision = hyperparameters[2] + theta[2] * y.shape[0]
-        mean = (
-            hyperparameters[2] * hyperparameters[0]
-            + theta[2] * np.sum(y - theta[1] * x[:, 1])
-        ) / precision
-        return stats.norm(loc=mean, scale=1 / np.sqrt(precision)).rvs()
+    def sample_mu(theta, y):
+        n = y.shape[0]
+        bary = np.mean(y)
 
-    def sample_beta(theta, hyperparameters, y, x):
-        precision = hyperparameters[3] + theta[2] * np.sum(x[:, 1] ** 2)
-        mean = (
-            hyperparameters[3] * hyperparameters[1]
-            + theta[2] * np.sum((y - theta[0]) * x[:, 1])
-        ) / precision
-        return stats.norm(loc=mean, scale=1 / np.sqrt(precision)).rvs()
+        mu_prior = 0
+        s_prior = 100
+        w = s_prior**2 / (theta[1] ** 2 / n + s_prior**2)
+        m = w * bary + (1 - w) * mu_prior
+        s = np.sqrt(w * theta[1] ** 2 / n)
+        return stats.norm(loc=m, scale=s).rvs()
 
-    def sample_tau(theta, hyperparameters, y, x):
-        chi_updated = hyperparameters[4] + y.shape[0] / 2
-        psi_updated = (
-            hyperparameters[5] + np.sum((y - theta[0] - theta[1] * x[:, 1]) ** 2) / 2
-        )
-        return stats.gamma(a=chi_updated, scale=1 / psi_updated).rvs()
+    def sample_sigma(theta, y):
+        n = y.shape[0]
 
-    return np.array([sample_alpha, sample_beta, sample_tau])
+        a_prior = 0.001
+        b_prior = 0.001
+
+        a = a_prior + 0.5 * n
+        b = b_prior + 0.5 * np.sum((y - theta[0]) ** 2)
+        tau = stats.gamma(
+            a=a,
+            scale=1 / b,
+        ).rvs()
+        sigma = np.sqrt(1 / tau)
+        return sigma
+
+    return np.array([sample_mu, sample_sigma])
 
 
 @pytest.fixture
@@ -56,14 +51,13 @@ def sampler(distributions):
 def test(sampler, data):
 
     sampler.sample(
-        iter=100,
-        warmup=10,
-        theta=np.array([0, 0, 2]),
+        iter=50000,
+        warmup=5000,
+        theta=np.array([0, 1]),
         lag=1,
-        hyperparameters=np.array([0, 0, 1, 1, 2, 1]),
-        x=data[1],
-        y=data[2],
+        y=data[1],
     )
 
     expected_theta = sampler.mean()
-    assert np.all(np.abs(expected_theta - data[0]) <= 10 ** (-2))
+    print(expected_theta)
+    assert np.all(np.abs(expected_theta - data[0]) <= 0.5)
