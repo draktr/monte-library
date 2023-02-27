@@ -29,13 +29,13 @@ $ python setup.py install
 - diagnostic tools: effective sample size (ESS), autocorrelation plots, ergodic mean plots, acceptance rate
 - visualizations: histograms, kernel density estimation plots, traceplots
 
-### General Monte Carlo methods
+### General Monte Carlo Methods
 
 - multidimensional Monte Carlo integration
 - multidimensional rejection sampling
 - multidimensional importance sampling
 
-### Markov Chain Monte Carlo modelling methods
+### Markov Chain Monte Carlo Modelling Methods
 
 - symmetric proposal Metropolis algorithm
 - Metropolis-Hastings algorithm
@@ -139,7 +139,7 @@ gaussian_sampler.traceplots()
 gaussian_sampler.plot_ergodic_mean()
 ```
 
-### Example 3 Sampling from a multivariate distribution using Hamiltonian Monte Carlo
+### Example 3 Sampling from a Multivariate Distribution using Hamiltonian Monte Carlo
 
 In the following example we use Hamiltonian Monte Carlo (HMC) algorithm to sample from a distribution. Note that this is a toy example, and HMC is more appropriate to be used for higher-dimensional model parameter estimation. Also note that analytical gradient is not neccesary.
 
@@ -181,7 +181,7 @@ There are more sophisticated and computationally efficient implementations of Mo
 - [Stan](https://mc-stan.org/) - state-of-the-art probabilistic language implementing advanced version of No-U-Turn Sampler
 - [PyMC](https://github.com/pymc-devs/pymc) - supports HMC and Metropolis-Hastings algoriths, as well as Sequential Monte Carlo methods
 
-## Project principles
+## Project Principles
 
 - Easy to be understood and used by non-mathematicians
 - Potential to be used as pedagogical tool
@@ -195,9 +195,9 @@ There are more sophisticated and computationally efficient implementations of Mo
 
 Feel free to reach out through Issues forum if you wish to add features or help in any other way. If there are any issues, bugs or improvement recommendations, please raise them in the forum. Especially reach out if you want to contribute with any of the possible features listed below.
 
-### Possible future features
+### Possible Future Features
 
-#### In `BaseSampler` class:
+#### In `BaseSampler` Class:
 
 - Sampling trace animation
 - ECDF plot
@@ -208,7 +208,8 @@ Feel free to reach out through Issues forum if you wish to add features or help 
 - Rhat (Gelman Rubin 1992)
 - Means equality test (Geweke 1992)
 
-#### Monte Carlo Methods
+#### Monte Carlo Methods:
+
 - Slice sampling
 - Annealed importance sampling
 - Component-wise Metropolis
@@ -236,7 +237,7 @@ The following is the non-exhaustive list of useful sources for learning more abo
 <a id="7">[7]</a> TWEAG Software Innovation Lab. (n.d.). Markov chain Monte Carlo (MCMC) Sampling, Part 1: The Basics - Tweag. Retrieved February 15, 2023, from https://www.tweag.io/blog/2019-10-25-mcmc-intro1/ \
 <a id="8">[8]</a> Urbanevych, V. (n.d.). VU | Bayesian linear regression and Metropolis-Hastings sampler. Retrieved February 15, 2023, from https://vitaliiur.github.io/blog/2021/linreg/
 
-### Gibbs sampler
+### Gibbs Sampler
 
 <a id="9">[9]</a> Campbell, K. R. (n.d.). Gibbs sampling for Bayesian linear regression in Python | Kieran R Campbell - blog. Retrieved February 15, 2023, from https://kieranrcampbell.github.io/blog/2016/05/15/gibbs-sampling-bayesian-linear-regression.html
 
