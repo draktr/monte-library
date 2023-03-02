@@ -9,61 +9,62 @@ Carlo is a set of Monte Carlo methods in Python. The package is written to be fl
 Preferred method to install carlo is through Python's package installer pip. To install carlo, run this command in your terminal
 
 ```shell
-$ pip install carlo
+pip install carlo
 ```
 
 Alternativelly, you can install the package directly from GitHub:
 
 ```shell
-$ git clone -b development https://github.com/draktr/carlo.git
-$ cd carlo
-$ python setup.py install
+git clone -b development https://github.com/draktr/carlo.git
+cd carlo
+python setup.py install
 ```
 
 ## Features
 
 ### Base module
 
-- saving samples and log probability values as `.csv` file
-- posterior mean, standard devition and quantiles
-- diagnostic tools: effective sample size (ESS), autocorrelation plots, ergodic mean plots, acceptance rate
-- visualizations: histograms, kernel density estimation plots, traceplots
+* saving samples and log probability values as `.csv` file
+* posterior mean, standard devition and quantiles
+* diagnostic tools: effective sample size (ESS), autocorrelation plots, ergodic mean plots, acceptance rate
+* visualizations: histograms, kernel density estimation plots, traceplots
 
 ### General Monte Carlo Methods
 
-- multidimensional Monte Carlo integration
-- multidimensional rejection sampling
-- multidimensional importance sampling
+* multidimensional Monte Carlo integration
+* multidimensional rejection sampling
+* multidimensional importance sampling
 
 ### Markov Chain Monte Carlo Modelling Methods
 
-- symmetric proposal Metropolis algorithm
-- Metropolis-Hastings algorithm
-- Gibbs sampler
-- vanilla Hamiltonian Monte Carlo
+* symmetric proposal Metropolis algorithm
+* Metropolis-Hastings algorithm
+* Gibbs sampler
+* vanilla Hamiltonian Monte Carlo
 
 ## Advantages
 
-- **FLEXIBILITY** - the package allows users to use various existing Monte Carlo methods for their needs without needing to write the whole algorithm. At the same time, `carlo` allows users to specify their own hyperparameters, posterior and proposal distributions as needed. Furthermore `BaseSampler` class can be used as parent class for any proprietary Monte Carlo algorithm thus utilizing its features for visualizations, posterior analysis and convergence checks
+* **FLEXIBILITY** - the package allows users to use various existing Monte Carlo methods for their needs without needing to write the whole algorithm. At the same time,  `carlo` allows users to specify their own hyperparameters, posterior and proposal distributions as needed. Furthermore `BaseSampler` class can be used as parent class for any proprietary Monte Carlo algorithm thus utilizing its features for visualizations, posterior analysis and convergence checks
 
-- **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `carlo` is a great tool to supplement learning as it is generality matches mathematical formulations of algorithm and simple syntaxt helps focus on the algorith itself.
+* **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `carlo` is a great tool to supplement learning as it is generality matches mathematical formulations of algorithm and simple syntaxt helps focus on the algorith itself.
 
-- **COMPREHENSIVE** - includes Monte Calor methods for various applications. Bayesian modeling methods include both classical methods (Metropolis algorithm) as well as more advanced methods such as Hamiltonian Monte Carlo.
+* **COMPREHENSIVE** - includes Monte Calor methods for various applications. Bayesian modeling methods include both classical methods (Metropolis algorithm) as well as more advanced methods such as Hamiltonian Monte Carlo.
 
 ## Usage
 
 Package contains variety of Monte Carlo methods that can be applied to problems ranging from integration to modelling. Importantly, code is both simple and generalized as to match the respective mathematical formulations of algorithms. As such it can be a great supplement when learning these topics. Finally, the package is flexible and `BaseSampler` class can be used as a parent class to any user-defined sampler. Furthermore, it is easy to modify existing algorithms with proprietary improvements.
 
-
 ### Example 1: Monte Carlo Integration
 
 The following example is a simple Monte Carlo implementation to solve the following integral:
 $$
+
     \int_{-3}^{3} \int_{-3}^{3} x^2 + y^3 dxdy
+
 $$
+
 ```python
 from carlo.monte_carlo_integrator import integrator
-
 
 def integrand(args):
         return args[0] ** 2 + args[1] ** 3
@@ -81,7 +82,6 @@ Example 2 is using Metropolis algorithm (with Gaussian proposal) to estimate par
 import numpy as np
 from scipy import stats
 from carlo.gaussian_metropolis import GaussianMetropolis
-
 
 # First, we create data
 true_theta = np.array([5, 10, 2, 2, 4])
@@ -147,7 +147,6 @@ In the following example we use Hamiltonian Monte Carlo (HMC) algorithm to sampl
 import numpy as np
 from carlo.hamiltonian_mc import HamiltonianMC
 
-
 # Defining the distribution that we are going to sample from...
 def posterior(theta):
     return -0.5 * np.sum(theta**2)
@@ -173,23 +172,23 @@ sampler.sample(
 
 There are more sophisticated and computationally efficient implementations of Monte Carlo methods for off-the-shelf solutions
 
-- [ArviZ](https://www.arviz.org/en/latest/) - independent library for exploratory analysis of Bayesian models
-- [vegas](https://github.com/gplepage/vegas) - uses improved version of the adaptive Monte Carlo vegas algorithm
-- [OpenBUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs/openbugs/) - open source implementation of BUGS language utilizing Gibbs sampler
-- [JAGS](https://mcmc-jags.sourceforge.io/) - cross-platform and more extensible implementation of BUGS language
-- [WinBUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs/the-bugs-project-winbugs/) - software for Bayesian analysis utilizing Gibbs sampler (available, but discontinued in favour of OpenBUGS)
-- [Stan](https://mc-stan.org/) - state-of-the-art probabilistic language implementing advanced version of No-U-Turn Sampler
-- [PyMC](https://github.com/pymc-devs/pymc) - supports HMC and Metropolis-Hastings algoriths, as well as Sequential Monte Carlo methods
+* [ArviZ](https://www.arviz.org/en/latest/) - independent library for exploratory analysis of Bayesian models
+* [vegas](https://github.com/gplepage/vegas) - uses improved version of the adaptive Monte Carlo vegas algorithm
+* [OpenBUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs/openbugs/) - open source implementation of BUGS language utilizing Gibbs sampler
+* [JAGS](https://mcmc-jags.sourceforge.io/) - cross-platform and more extensible implementation of BUGS language
+* [WinBUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs/the-bugs-project-winbugs/) - software for Bayesian analysis utilizing Gibbs sampler (available, but discontinued in favour of OpenBUGS)
+* [Stan](https://mc-stan.org/) - state-of-the-art probabilistic language implementing advanced version of No-U-Turn Sampler
+* [PyMC](https://github.com/pymc-devs/pymc) - supports HMC and Metropolis-Hastings algoriths, as well as Sequential Monte Carlo methods
 
 ## Project Principles
 
-- Easy to be understood and used by non-mathematicians
-- Potential to be used as pedagogical tool
-- Easy to modify algorithms with proprietary improvements
-- Flexibility and simplicity over computational efficiency
-- Tested
-- Dedicated documentation
-- Formatting deferred to [Black](https://github.com/psf/black)
+* Easy to be understood and used by non-mathematicians
+* Potential to be used as pedagogical tool
+* Easy to modify algorithms with proprietary improvements
+* Flexibility and simplicity over computational efficiency
+* Tested
+* Dedicated documentation
+* Formatting deferred to [Black](https://github.com/psf/black)
 
 ## Maintaining and Contributing
 
@@ -197,27 +196,27 @@ Feel free to reach out through Issues forum if you wish to add features or help 
 
 ### Possible Future Features
 
-#### In `BaseSampler` Class:
+#### In `BaseSampler` Class
 
-- Sampling trace animation
-- ECDF plot
-- Forrest plot of parameter estimates with credible intervals
-- Monte Carlo Error
-- Support for multiple chains
-- Convergence iterations required (Raftery-Lewis 1995)
-- Rhat (Gelman Rubin 1992)
-- Means equality test (Geweke 1992)
+* Sampling trace animation
+* ECDF plot
+* Forrest plot of parameter estimates with credible intervals
+* Monte Carlo Error
+* Support for multiple chains
+* Convergence iterations required (Raftery-Lewis 1995)
+* Rhat (Gelman Rubin 1992)
+* Means equality test (Geweke 1992)
 
-#### Monte Carlo Methods:
+#### Monte Carlo Methods
 
-- Slice sampling
-- Annealed importance sampling
-- Component-wise Metropolis
-- Independent Metropolis
-- Wang-Landau algorithm
-- Monte Carlo tree search
-- Direct Sampling Monte Carlo
-- Monte Carlo statistical distribution test
+* Slice sampling
+* Annealed importance sampling
+* Component-wise Metropolis
+* Independent Metropolis
+* Wang-Landau algorithm
+* Monte Carlo tree search
+* Direct Sampling Monte Carlo
+* Monte Carlo statistical distribution test
 
 ## Further Reading
 
@@ -226,24 +225,25 @@ The following is the non-exhaustive list of useful sources for learning more abo
 ### General
 
 <a id="1">[1]</a> Ntzoufras, I. (2009). Bayesian Modeling Using WinBUGS. Wiley. \
-<a id="2">[2]</a> Metropolis, N., & Ulam, S. (1949). The Monte Carlo Method. Journal of the American Statistical Association, 44(247), 335–341. https://doi.org/10.1080/01621459.1949.10483310
+<a id="2">[2]</a> Metropolis, N., & Ulam, S. (1949). The Monte Carlo Method. Journal of the American Statistical Association, 44(247), 335–341. <https://doi.org/10.1080/01621459.1949.10483310>
 
 ### Metropolis
 
-<a id="3">[3]</a> Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H., & Teller, E. (2004). Equation of State Calculations by Fast Computing Machines. The Journal of Chemical Physics, 21(6), 1087. https://doi.org/10.1063/1.1699114 \
-<a id="4">[4]</a> Hastings, W. K. (1970). Monte Carlo sampling methods using Markov chains and their applications. Biometrika, 57(1), 97–109. https://doi.org/10.1093/BIOMET/57.1.97 \
-<a id="5">[5]</a> Hartig, F. (n.d.). A simple Metropolis-Hastings MCMC in R | theoretical ecology. Retrieved February 15, 2023, from https://theoreticalecology.wordpress.com/2010/09/17/metropolis-hastings-mcmc-in-r/ \
-<a id="6">[6]</a> Dirty Quant @YouTube. (n.d.). The Metropolis-Hastings Algorithm (MCMC in Python) - YouTube. Retrieved February 15, 2023, from https://www.youtube.com/watch?v=MxI78mpq_44 \
-<a id="7">[7]</a> TWEAG Software Innovation Lab. (n.d.). Markov chain Monte Carlo (MCMC) Sampling, Part 1: The Basics - Tweag. Retrieved February 15, 2023, from https://www.tweag.io/blog/2019-10-25-mcmc-intro1/ \
-<a id="8">[8]</a> Urbanevych, V. (n.d.). VU | Bayesian linear regression and Metropolis-Hastings sampler. Retrieved February 15, 2023, from https://vitaliiur.github.io/blog/2021/linreg/
+<a id="3">[3]</a> Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H., & Teller, E. (2004). Equation of State Calculations by Fast Computing Machines. The Journal of Chemical Physics, 21(6), 1087. <https://doi.org/10.1063/1.1699114> \
+<a id="4">[4]</a> Hastings, W. K. (1970). Monte Carlo sampling methods using Markov chains and their applications. Biometrika, 57(1), 97–109. <https://doi.org/10.1093/BIOMET/57.1.97> \
+<a id="5">[5]</a> Hartig, F. (n.d.). A simple Metropolis-Hastings MCMC in R | theoretical ecology. Retrieved February 15, 2023, from <https://theoreticalecology.wordpress.com/2010/09/17/metropolis-hastings-mcmc-in-r/> \
+<a id="6">[6]</a> Dirty Quant @YouTube. (n.d.). The Metropolis-Hastings Algorithm (MCMC in Python) - YouTube. Retrieved February 15, 2023, from <https://www.youtube.com/watch?v=MxI78mpq_44> \
+<a id="7">[7]</a> TWEAG Software Innovation Lab. (n.d.). Markov chain Monte Carlo (MCMC) Sampling, Part 1: The Basics - Tweag. Retrieved February 15, 2023, from <https://www.tweag.io/blog/2019-10-25-mcmc-intro1/> \
+<a id="8">[8]</a> Urbanevych, V. (n.d.). VU | Bayesian linear regression and Metropolis-Hastings sampler. Retrieved February 15, 2023, from <https://vitaliiur.github.io/blog/2021/linreg/>
 
 ### Gibbs Sampler
 
-<a id="9">[9]</a> Campbell, K. R. (n.d.). Gibbs sampling for Bayesian linear regression in Python | Kieran R Campbell - blog. Retrieved February 15, 2023, from https://kieranrcampbell.github.io/blog/2016/05/15/gibbs-sampling-bayesian-linear-regression.html
+<a id="9">[9]</a> Campbell, K. R. (n.d.). Gibbs sampling for Bayesian linear regression in Python | Kieran R Campbell - blog. Retrieved February 15, 2023, from <https://kieranrcampbell.github.io/blog/2016/05/15/gibbs-sampling-bayesian-linear-regression.html>
 
 ### Hamiltonian Monte Carlo
-<a id="10">[10]</a> Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian Monte Carlo. https://doi.org/10.48550/arxiv.1701.02434
-<a id="11">[11]</a> Neal, R. M. (2012). MCMC using Hamiltonian dynamics. Handbook of Markov Chain Monte Carlo, 1–592. https://doi.org/10.1201/b10905 \
-<a id="12">[12]</a> Stan. (n.d.). 15.1 Hamiltonian Monte Carlo | Stan Reference Manual. Retrieved February 15, 2023, from https://mc-stan.org/docs/reference-manual/hamiltonian-monte-carlo.html \
-<a id="13">[13]</a> Clark, M. (n.d.). Hamiltonian Monte Carlo | Model Estimation by Example. Retrieved February 15, 2023, from https://m-clark.github.io/models-by-example/hamiltonian-monte-carlo.html \
-<a id="14">[14]</a> Richard. (n.d.). Markov Chains: Why Walk When You Can Flow? | Elements of Evolutionary Anthropology. Retrieved February 15, 2023, from http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/
+
+<a id="10">[10]</a> Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian Monte Carlo. <https://doi.org/10.48550/arxiv.1701.02434>
+<a id="11">[11]</a> Neal, R. M. (2012). MCMC using Hamiltonian dynamics. Handbook of Markov Chain Monte Carlo, 1–592. <https://doi.org/10.1201/b10905> \
+<a id="12">[12]</a> Stan. (n.d.). 15.1 Hamiltonian Monte Carlo | Stan Reference Manual. Retrieved February 15, 2023, from <https://mc-stan.org/docs/reference-manual/hamiltonian-monte-carlo.html> \
+<a id="13">[13]</a> Clark, M. (n.d.). Hamiltonian Monte Carlo | Model Estimation by Example. Retrieved February 15, 2023, from <https://m-clark.github.io/models-by-example/hamiltonian-monte-carlo.html> \
+<a id="14">[14]</a> Richard. (n.d.). Markov Chains: Why Walk When You Can Flow? | Elements of Evolutionary Anthropology. Retrieved February 15, 2023, from <http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/>
