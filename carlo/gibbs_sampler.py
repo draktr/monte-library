@@ -6,7 +6,7 @@ proposals are accepted.
 """
 
 import numpy as np
-import carlo.checks
+import carlo._checks
 from carlo import BaseSampler
 
 
@@ -25,7 +25,7 @@ class GibbsSampler(BaseSampler):
         """
 
         super().__init__()
-        sampling_distributions = carlo.checks._check_sampling_distributions(
+        sampling_distributions = carlo._checks._check_sampling_distributions(
             sampling_distributions
         )
         self.sampling_distributions = sampling_distributions
@@ -69,9 +69,9 @@ class GibbsSampler(BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        carlo.checks._check_parameters(iter=iter, warmup=warmup, lag=lag)
-        theta = carlo.checks._check_theta(theta)
-        carlo.checks._check_dimensions(theta, self.sampling_distributions)
+        carlo._checks._check_parameters(iter=iter, warmup=warmup, lag=lag)
+        theta = carlo._checks._check_theta(theta)
+        carlo._checks._check_dimensions(theta, self.sampling_distributions)
 
         samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)

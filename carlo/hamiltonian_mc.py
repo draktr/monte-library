@@ -5,7 +5,7 @@ to perform numerical integration that is  then corrected by Metropolis acceptanc
 """
 
 import numpy as np
-import carlo.checks
+import carlo._checks
 from carlo import BaseSampler
 
 
@@ -22,8 +22,8 @@ class HamiltonianMC(BaseSampler):
         """
 
         super().__init__()
-        carlo.checks._check_posterior(log_posterior)
-        carlo.checks._check_posterior_gradient(log_posterior_gradient)
+        carlo._checks._check_posterior(log_posterior)
+        carlo._checks._check_posterior_gradient(log_posterior_gradient)
         self.log_posterior = log_posterior
         self.log_posterior_gradient = log_posterior_gradient
 
@@ -151,11 +151,11 @@ class HamiltonianMC(BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        carlo.checks._check_parameters(
+        carlo._checks._check_parameters(
             iter=iter, warmup=warmup, epsilon=epsilon, l=l, lag=lag
         )
-        theta = carlo.checks._check_theta(theta)
-        metric = carlo.checks._check_metric(metric, theta)
+        theta = carlo._checks._check_theta(theta)
+        metric = carlo._checks._check_metric(metric, theta)
 
         samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)

@@ -14,5 +14,7 @@ from carlo.metropolis_hastings import MetropolisHastings
 from carlo.monte_carlo_integrator import integrator
 from carlo.rejection_sampling import rejection
 
+__all__ = [s for s in dir() if not s.startswith("_")]
+
 __version__ = "0.1.0"
 __author__ = "github.com/draktr"

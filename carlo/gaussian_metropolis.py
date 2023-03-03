@@ -4,7 +4,7 @@ with Gaussian proposal distribution.
 """
 
 import numpy as np
-import carlo.checks
+import carlo._checks
 from carlo import BaseSampler
 
 
@@ -20,7 +20,7 @@ class GaussianMetropolis(BaseSampler):
         """
 
         super().__init__()
-        carlo.checks._check_posterior(log_posterior)
+        carlo._checks._check_posterior(log_posterior)
         self.log_posterior = log_posterior
 
     def _iterate(self, theta_current, step_size, **kwargs):
@@ -77,10 +77,10 @@ class GaussianMetropolis(BaseSampler):
         numpy array of acceptance information for every algorithm iteration.
         :rtype: ndarray, ndarray
         """
-        carlo.checks._check_parameters(
+        carlo._checks._check_parameters(
             iter=iter, warmup=warmup, step_size=step_size, lag=lag
         )
-        theta = carlo.checks._check_theta(theta)
+        theta = carlo._checks._check_theta(theta)
 
         samples = np.zeros((iter, theta.shape[0]))
         acceptances = np.zeros(iter)
