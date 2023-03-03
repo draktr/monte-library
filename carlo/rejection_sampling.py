@@ -8,7 +8,7 @@ Module that contains function that performs rejection sampling.
 import numpy as np
 
 
-def rejection_sampling(pdf, lower_bounds, upper_bounds, n):
+def rejection(pdf, lower_bounds, upper_bounds, n):
     """
     Performs rejection sampling from a distribution whose probability density/mass
     function is specified in `pdf`.

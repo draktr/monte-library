@@ -3,7 +3,7 @@ Module that contains function performing importance sampling.
 """
 
 
-def importance_sampling(importance_sampler, importance_density, target_density, n):
+def importance(importance_sampler, importance_density, target_density, n):
     """
     Performs importance sampling from `target_density` distribution using `importance`
     distribution as proposal distribution.
