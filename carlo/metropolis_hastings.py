@@ -6,10 +6,10 @@ proposal distribution can be any arbitrary distribution including non-symetrical
 
 import numpy as np
 import carlo.checks
-from carlo import base_sampler
+from carlo import BaseSampler
 
 
-class MetropolisHastings(base_sampler.BaseSampler):
+class MetropolisHastings(BaseSampler):
     def __init__(self, log_posterior) -> None:
         """
         Initializes the problem sampler object.
@@ -135,13 +135,3 @@ class MetropolisHastings(base_sampler.BaseSampler):
         self.lp = lp
 
         return samples, acceptances
-
-
-a = None
-
-if not (callable(a) or None):
-    print("its something else")
-
-
-if not callable(a) and not isinstance(a, type(None)):
-    print("its something else")

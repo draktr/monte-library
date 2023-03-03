@@ -5,10 +5,10 @@ with Gaussian proposal distribution.
 
 import numpy as np
 import carlo.checks
-from carlo import base_sampler
+from carlo import BaseSampler
 
 
-class GaussianMetropolis(base_sampler.BaseSampler):
+class GaussianMetropolis(BaseSampler):
     def __init__(self, log_posterior) -> None:
         """
         Initializes the problem sampler object.

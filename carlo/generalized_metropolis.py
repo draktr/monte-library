@@ -7,10 +7,10 @@ Metropolis-Hastings algorithm should be used which can be found in `metropolis_h
 
 import numpy as np
 import carlo.checks
-from carlo import base_sampler
+from carlo import BaseSampler
 
 
-class GeneralizedMetropolis(base_sampler.BaseSampler):
+class GeneralizedMetropolis(BaseSampler):
     def __init__(self, log_posterior) -> None:
         """
         Initializes the problem sampler object.

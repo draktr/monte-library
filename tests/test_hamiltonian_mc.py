@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from carlo.hamiltonian_mc import HamiltonianMC
+from carlo import HamiltonianMC
 
 
 def target(theta):

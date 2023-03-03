@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from scipy import stats
-from carlo.rejection_sampling import rejection_sampling
+from carlo import rejection
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def multinorm():
 
 def test_one_dimensional(distribution):
 
-    samples = rejection_sampling(
+    samples = rejection(
         pdf=distribution.pdf,
         lower_bounds=np.array([-1]),
         upper_bounds=np.array([11]),
@@ -30,7 +30,7 @@ def test_one_dimensional(distribution):
 
 
 def test_multidimensional(multinorm):
-    samples = rejection_sampling(
+    samples = rejection(
         pdf=multinorm.pdf,
         lower_bounds=np.array([1, -1, 0]),
         upper_bounds=np.array([9, 5, 6]),

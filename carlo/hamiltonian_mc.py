@@ -6,10 +6,10 @@ to perform numerical integration that is  then corrected by Metropolis acceptanc
 
 import numpy as np
 import carlo.checks
-from carlo import base_sampler
+from carlo import BaseSampler
 
 
-class HamiltonianMC(base_sampler.BaseSampler):
+class HamiltonianMC(BaseSampler):
     def __init__(self, log_posterior, log_posterior_gradient) -> None:
         """
         Initializes the problem sampler object

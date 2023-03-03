@@ -3,7 +3,7 @@ import numpy as np
 from scipy import stats
 from scipy.stats import multivariate_normal as mvn, norm
 from scipy.stats._multivariate import _squeeze_output
-from carlo.metropolis_hastings import MetropolisHastings
+from carlo import MetropolisHastings
 
 
 @pytest.fixture

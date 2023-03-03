@@ -1,8 +1,8 @@
 import pytest
 import numpy as np
 from scipy import stats
-from carlo.gaussian_metropolis import GaussianMetropolis
-from carlo.generalized_metropolis import GeneralizedMetropolis
+from carlo import GaussianMetropolis
+from carlo import GeneralizedMetropolis
 
 
 @pytest.fixture

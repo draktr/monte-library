@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from scipy import stats
-from carlo.importance_sampling import importance_sampling
+from carlo import importance
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ def multitarget():
 
 def test_one_dimensional(importance, target):
 
-    samples = importance_sampling(
+    samples = importance(
         importance_sampler=importance.rvs,
         importance_density=importance.pdf,
         target_density=target.pdf,
@@ -41,7 +41,7 @@ def test_one_dimensional(importance, target):
 
 
 def test_multidimensiona(multiimportance, multitarget):
-    samples = importance_sampling(
+    samples = importance(
         importance_sampler=multiimportance.rvs,
         importance_density=multiimportance.pdf,
         target_density=multitarget.pdf,

@@ -7,10 +7,10 @@ proposals are accepted.
 
 import numpy as np
 import carlo.checks
-from carlo import base_sampler
+from carlo import BaseSampler
 
 
-class GibbsSampler(base_sampler.BaseSampler):
+class GibbsSampler(BaseSampler):
     def __init__(self, sampling_distributions) -> None:
         """
         Initializes the problem sampler object.
