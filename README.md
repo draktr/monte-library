@@ -1,4 +1,4 @@
-# carlo
+# Carlo
 
 Carlo is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.
 
@@ -12,7 +12,7 @@ Preferred method to install carlo is through Python's package installer pip. To 
 pip install carlo
 ```
 
-Alternativelly, you can install the package directly from GitHub:
+Alternatively, you can install the package directly from GitHub:
 
 ```shell
 git clone -b development https://github.com/draktr/carlo.git
@@ -25,7 +25,7 @@ python setup.py install
 ### Base module
 
 * saving samples and log probability values as `.csv` file
-* posterior mean, standard devition and quantiles
+* posterior mean, standard deviation and quantiles
 * diagnostic tools: effective sample size (ESS), autocorrelation plots, ergodic mean plots, acceptance rate
 * visualizations: histograms, kernel density estimation plots, traceplots
 
@@ -46,9 +46,9 @@ python setup.py install
 
 * **FLEXIBILITY** - the package allows users to use various existing Monte Carlo methods for their needs without needing to write the whole algorithm. At the same time,  `carlo` allows users to specify their own hyperparameters, posterior and proposal distributions as needed. Furthermore `BaseSampler` class can be used as parent class for any proprietary Monte Carlo algorithm thus utilizing its features for visualizations, posterior analysis and convergence checks
 
-* **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `carlo` is a great tool to supplement learning as it is generality matches mathematical formulations of algorithm and simple syntaxt helps focus on the algorith itself.
+* **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `carlo` is a great tool to supplement learning as it generally matches mathematical formulations of algorithms and simple syntax helps focus on the algorithm itself.
 
-* **COMPREHENSIVE** - includes Monte Calor methods for various applications. Bayesian modeling methods include both classical methods (Metropolis algorithm) as well as more advanced methods such as Hamiltonian Monte Carlo.
+* **COMPREHENSIVE** - includes Monte Calor methods for various applications. Bayesian modelling methods include both classical methods (Metropolis algorithm) as well as more advanced methods such as Hamiltonian Monte Carlo.
 
 ## Usage
 
@@ -141,7 +141,7 @@ gaussian_sampler.plot_ergodic_mean()
 
 ### Example 3 Sampling from a Multivariate Distribution using Hamiltonian Monte Carlo
 
-In the following example we use Hamiltonian Monte Carlo (HMC) algorithm to sample from a distribution. Note that this is a toy example, and HMC is more appropriate to be used for higher-dimensional model parameter estimation. Also note that analytical gradient is not neccesary.
+In the following example we use Hamiltonian Monte Carlo (HMC) algorithm to sample from a distribution. Note that this is a toy example, and HMC is more appropriate to be used for higher-dimensional model parameter estimation. Also note that analytical gradient is not necessary.
 
 ```python
 import numpy as np
@@ -178,7 +178,7 @@ There are more sophisticated and computationally efficient implementations of Mo
 * [JAGS](https://mcmc-jags.sourceforge.io/) - cross-platform and more extensible implementation of BUGS language
 * [WinBUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs/the-bugs-project-winbugs/) - software for Bayesian analysis utilizing Gibbs sampler (available, but discontinued in favour of OpenBUGS)
 * [Stan](https://mc-stan.org/) - state-of-the-art probabilistic language implementing advanced version of No-U-Turn Sampler
-* [PyMC](https://github.com/pymc-devs/pymc) - supports HMC and Metropolis-Hastings algoriths, as well as Sequential Monte Carlo methods
+* [PyMC](https://github.com/pymc-devs/pymc) - supports HMC and Metropolis-Hastings algorithms, as well as Sequential Monte Carlo methods
 
 ## Project Principles
 
@@ -204,7 +204,7 @@ Feel free to reach out through Issues forum if you wish to add features or help 
 * Monte Carlo Error
 * Support for multiple chains
 * Convergence iterations required (Raftery-Lewis 1995)
-* Rhat (Gelman Rubin 1992)
+* Rhat (Gelman-Rubin 1992)
 * Means equality test (Geweke 1992)
 
 #### Monte Carlo Methods
@@ -224,7 +224,7 @@ The following is the non-exhaustive list of useful sources for learning more abo
 
 ### General
 
-<a id="1">[1]</a> Ntzoufras, I. (2009). Bayesian Modeling Using WinBUGS. Wiley. \
+<a id="1">[1]</a> Ntzoufras, I. (2009). Bayesian Modelling Using WinBUGS. Wiley. \
 <a id="2">[2]</a> Metropolis, N., & Ulam, S. (1949). The Monte Carlo Method. Journal of the American Statistical Association, 44(247), 335–341. <https://doi.org/10.1080/01621459.1949.10483310>
 
 ### Metropolis
