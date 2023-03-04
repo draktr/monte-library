@@ -22,9 +22,54 @@ class BaseSampler:
         which are saved here at each iteration
         """
 
-        self.samples = None
-        self.acceptances = None
-        self.lp = None
+        self._samples = None
+        self._acceptances = None
+        self._lp = None
+
+    @property
+    def samples(self):
+        """
+        Gets or sets samples property
+
+        :return: Samples property
+        :rtype: ndarray
+        """
+
+        return self._samples
+
+    @samples.setter
+    def samples(self, samples):
+        self._samples = samples
+
+    @property
+    def acceptances(self):
+        """
+        Gets or sets acceptances property
+
+        :return: Acceptances property
+        :rtype: ndarray
+        """
+
+        return self._acceptances
+
+    @acceptances.setter
+    def acceptances(self, acceptances):
+        self._acceptances = acceptances
+
+    @property
+    def lp(self):
+        """
+        Gets or sets log-probability (lp) property
+
+        :return: Log-probability (lp) property
+        :rtype: ndarray
+        """
+
+        return self._lp
+
+    @lp.setter
+    def lp(self, lp):
+        self._lp = lp
 
     def save_samples(self, parameter_names=None, path=None):
         """
@@ -34,6 +79,7 @@ class BaseSampler:
         the working directory, defaults to None
         :type path: str, optional
         """
+
         if parameter_names is None:
             column_names = np.array(
                 np.concatenate(
