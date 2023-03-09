@@ -17,4 +17,4 @@ from carlo.rejection_sampling import rejection
 __all__ = [s for s in dir() if not s.startswith("_")]
 
 __version__ = "0.1.0"
-__author__ = "github.com/draktr"
+__author__ = "draktr"
