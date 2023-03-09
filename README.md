@@ -58,9 +58,7 @@ Package contains variety of Monte Carlo methods that can be applied to problems 
 
 The following example is a simple Monte Carlo implementation to solve the following integral:
 $$
-
-    \int_{-3}^{3} \int_{-3}^{3} x^2 + y^3 dxdy
-
+  \int_{-3}^{3} \int_{-3}^{3} x^2 + y^3 dxdy
 $$
 
 ```python
