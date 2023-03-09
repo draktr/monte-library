@@ -1,13 +1,13 @@
 from setuptools import setup
 
 setup(
-    name="carlo",
+    name="monte",
     version="0.1.0",
-    description="Carlo is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.",
-    url="https://github.com/draktr/carlo",
+    description="Monte is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.",
+    url="https://github.com/draktr/monte",
     author="draktr",
     license="MIT License",
-    packages=["carlo"],
+    packages=["monte"],
     install_requires=[
         "numpy",
         "scipy",
@@ -17,7 +17,7 @@ setup(
         "statsmodels",
     ],
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Education",
         "Intended Audience :: Financial and Insurance Industry",

@@ -1,6 +1,6 @@
 import pytest
 import numpy as np
-from carlo import integrator
+from monte import integrator
 
 
 def test_one_dimensional():

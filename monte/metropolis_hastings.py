@@ -5,8 +5,8 @@ proposal distribution can be any arbitrary distribution including non-symetrical
 """
 
 import numpy as np
-import carlo._checks
-from carlo import BaseSampler
+import monte._checks
+from monte import BaseSampler
 
 
 class MetropolisHastings(BaseSampler):
@@ -19,7 +19,7 @@ class MetropolisHastings(BaseSampler):
         """
 
         super().__init__()
-        carlo._checks._check_posterior(log_posterior)
+        monte._checks._check_posterior(log_posterior)
         self.log_posterior = log_posterior
 
     def _iterate(self, theta_current, proposal_sampler, proposal_density, **kwargs):
@@ -83,15 +83,15 @@ class MetropolisHastings(BaseSampler):
         :rtype: ndarray, ndarray
         """
 
-        carlo._checks._check_parameters(
+        monte._checks._check_parameters(
             iter=iter,
             warmup=warmup,
             proposal_sampler=proposal_sampler,
             proposal_density=proposal_density,
             lag=lag,
         )
-        theta = carlo._checks._check_theta(theta)
-        proposal_sampler, proposal_density = carlo._checks._check_proposal(
+        theta = monte._checks._check_theta(theta)
+        proposal_sampler, proposal_density = monte._checks._check_proposal(
             proposal_sampler, proposal_density
         )
 

@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from scipy import stats
-from carlo import importance
+from monte import importance
 
 
 @pytest.fixture

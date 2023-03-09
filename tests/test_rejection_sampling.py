@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from scipy import stats
-from carlo import rejection
+from monte import rejection
 
 
 @pytest.fixture

@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from scipy import stats
-from carlo import GibbsSampler
+from monte import GibbsSampler
 
 
 @pytest.fixture
