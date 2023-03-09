@@ -13,8 +13,7 @@ def rejection(pdf, lower_bounds, upper_bounds, n):
     Performs rejection sampling from a distribution whose probability density/mass
     function is specified in `pdf`.
 
-    :param pdf: Probability density/mass function of a distribution that we want
-    to sample from
+    :param pdf: Probability density/mass function of a distribution that we want to sample from
     :type pdf: callable
     :param lower_bounds: Lower bound(s) of the sampling region
     :type lower_bounds: ndarray

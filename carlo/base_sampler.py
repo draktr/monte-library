@@ -75,8 +75,7 @@ class BaseSampler:
         """
         Exports samples as `.csv` file.
 
-        :param path: Path where to save the `.csv` file. By default, it saves to
-        the working directory, defaults to None
+        :param path: Path where to save the `.csv` file. By default, it saves to the working directory, defaults to None
         :type path: str, optional
         """
 
@@ -168,8 +167,7 @@ class BaseSampler:
         Plots histogram(s) (for each parameter) of posterior. Visually estimates
         posterior distribution
 
-        :param figsize: Size of the total figure
-        (all histograms together), defaults to (12, 8)
+        :param figsize: Size of the total figure (all histograms together), defaults to (12, 8)
         :type figsize: tuple, optional
         :param bins: Number of histogram bins, defaults to 100
         :type bins: int, optional

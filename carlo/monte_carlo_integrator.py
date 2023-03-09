@@ -21,7 +21,7 @@ def integrator(integrand, lower_bounds, upper_bounds, n):
     :param n: Number of simulation samples
     :type n: int
     :raises ValueError: Error raised if bounds provided are of different dimensions
-    :return: Approximate integral value
+    :return: Estimated integral value
     :rtype: float
     """
 
