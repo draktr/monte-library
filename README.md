@@ -1,22 +1,23 @@
-# Carlo
+# Monte
 
-Carlo is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.
+Monte is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.
 
 * Free software: MIT license
+* Documentation: <https://monte.readthedocs.io/en/latest/>
 
 ## Installation
 
-Preferred method to install carlo is through Python's package installer pip. To install carlo, run this command in your terminal
+Preferred method to install `monte` is through Python's package installer pip. To install `monte`, run this command in your terminal
 
 ```shell
-pip install carlo
+pip install monte
 ```
 
 Alternatively, you can install the package directly from GitHub:
 
 ```shell
-git clone -b development https://github.com/draktr/carlo.git
-cd carlo
+git clone -b development https://github.com/draktr/monte.git
+cd monte
 python setup.py install
 ```
 
@@ -44,9 +45,9 @@ python setup.py install
 
 ## Advantages
 
-* **FLEXIBILITY** - the package allows users to use various existing Monte Carlo methods for their needs without needing to write the whole algorithm. At the same time,  `carlo` allows users to specify their own hyperparameters, posterior and proposal distributions as needed. Furthermore `BaseSampler` class can be used as parent class for any proprietary Monte Carlo algorithm thus utilizing its features for visualizations, posterior analysis and convergence checks
+* **FLEXIBLE** - the package allows users to use various existing Monte Carlo methods for their needs without needing to write the whole algorithm. At the same time,  `monte` allows users to specify their own hyperparameters, posterior and proposal distributions as needed. Furthermore `BaseSampler` class can be used as parent class for any proprietary Monte Carlo algorithm thus utilizing its features for visualizations, posterior analysis and convergence checks
 
-* **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `carlo` is a great tool to supplement learning as it generally matches mathematical formulations of algorithms and simple syntax helps focus on the algorithm itself.
+* **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `monte` is a great tool to supplement learning as it generally matches mathematical formulations of algorithms and simple syntax helps focus on the algorithm itself.
 
 * **COMPREHENSIVE** - includes Monte Calor methods for various applications. Bayesian modelling methods include both classical methods (Metropolis algorithm) as well as more advanced methods such as Hamiltonian Monte Carlo.
 
@@ -60,7 +61,7 @@ The following example is a simple Monte Carlo implementation to solve the follow
 $$ \int_{-3}^{3} \int_{-3}^{3} x^2 + y^3 dxdy $$
 
 ```python
-from carlo.monte_carlo_integrator import integrator
+from monte import integrator
 
 def integrand(args):
         return args[0] ** 2 + args[1] ** 3
@@ -77,7 +78,7 @@ Example 2 is using Metropolis algorithm (with Gaussian proposal) to estimate par
 ```python
 import numpy as np
 from scipy import stats
-from carlo.gaussian_metropolis import GaussianMetropolis
+from monte import GaussianMetropolis
 
 # First, we create data
 true_theta = np.array([5, 10, 2, 2, 4])
@@ -141,7 +142,7 @@ In the following example we use Hamiltonian Monte Carlo (HMC) algorithm to sampl
 
 ```python
 import numpy as np
-from carlo.hamiltonian_mc import HamiltonianMC
+from monte import HamiltonianMC
 
 # Defining the distribution that we are going to sample from...
 def posterior(theta):
@@ -216,7 +217,7 @@ Feel free to reach out through Issues forum if you wish to add features or help 
 
 ## Further Reading
 
-The following is the non-exhaustive list of useful sources for learning more about Monte Carlo methods. Some of the code in `carlo` has been written based on mathematical formulae from some of these sources.
+The following is the non-exhaustive list of useful sources for learning more about Monte Carlo methods. Some of the code in `monte` has been written based on mathematical formulae from some of these sources.
 
 ### General
 
@@ -238,7 +239,7 @@ The following is the non-exhaustive list of useful sources for learning more abo
 
 ### Hamiltonian Monte Carlo
 
-<a id="10">[10]</a> Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian Monte Carlo. <https://doi.org/10.48550/arxiv.1701.02434>
+<a id="10">[10]</a> Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian Monte Carlo. <https://doi.org/10.48550/arxiv.1701.02434> \
 <a id="11">[11]</a> Neal, R. M. (2012). MCMC using Hamiltonian dynamics. Handbook of Markov Chain Monte Carlo, 1–592. <https://doi.org/10.1201/b10905> \
 <a id="12">[12]</a> Stan. (n.d.). 15.1 Hamiltonian Monte Carlo | Stan Reference Manual. Retrieved February 15, 2023, from <https://mc-stan.org/docs/reference-manual/hamiltonian-monte-carlo.html> \
 <a id="13">[13]</a> Clark, M. (n.d.). Hamiltonian Monte Carlo | Model Estimation by Example. Retrieved February 15, 2023, from <https://m-clark.github.io/models-by-example/hamiltonian-monte-carlo.html> \
