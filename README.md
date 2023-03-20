@@ -136,7 +136,7 @@ gaussian_sampler.traceplots()
 gaussian_sampler.plot_ergodic_mean()
 ```
 
-### Example 3 Sampling from a Multivariate Distribution using Hamiltonian Monte Carlo
+### Example 3: Sampling from a Multivariate Distribution using Hamiltonian Monte Carlo
 
 In the following example we use Hamiltonian Monte Carlo (HMC) algorithm to sample from a distribution. Note that this is a toy example, and HMC is more appropriate to be used for higher-dimensional model parameter estimation. Also note that analytical gradient is not necessary.
 
@@ -187,7 +187,7 @@ There are more sophisticated and computationally efficient implementations of Mo
 * Dedicated documentation
 * Formatting deferred to [Black](https://github.com/psf/black)
 
-## Maintaining and Contributing
+## Future Development
 
 Feel free to reach out through Issues forum if you wish to add features or help in any other way. If there are any issues, bugs or improvement recommendations, please raise them in the forum. Especially reach out if you want to contribute with any of the possible features listed below.
 

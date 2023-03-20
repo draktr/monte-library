@@ -12,12 +12,9 @@ from statsmodels.tsa.stattools import acf
 
 
 class BaseSampler:
-    """
-    Base sampler for Monte Carlo sampling methods containing basic utility methods
-    """
-
     def __init__(self) -> None:
         """
+        Base sampler for Monte Carlo sampling methods containing basic utility methods.
         Initializes the sampler with two main attributes: samples and acceptances
         which are saved here at each iteration
         """
@@ -75,7 +72,8 @@ class BaseSampler:
         """
         Exports samples as `.csv` file.
 
-        :param path: Path where to save the `.csv` file. By default, it saves to the working directory, defaults to None
+        :param path: Path where to save the `.csv` file. By default, it saves to the
+                     working directory, defaults to None
         :type path: str, optional
         """
 
@@ -151,7 +149,12 @@ class BaseSampler:
 
     def credible_interval(self, ci=0.9):
         """
-        Calculates :math:`100*ci%` credible interval for each parameter
+        Calculates
+
+        .. math::
+            100 \\times \\text{ci} \%
+
+        credible interval for each parameter
 
         :param ci: Credible interval in decimal, defaults to 0.9
         :type ci: float, optional

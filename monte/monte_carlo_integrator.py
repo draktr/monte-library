@@ -1,5 +1,5 @@
 """
-Module containing Monte Carlo integrator
+Module containing Monte Carlo integrator.
 
 :raises ValueError: Lower and upper bounds are of different dimensions.
 :return: Approximate integral value

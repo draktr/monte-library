@@ -16,7 +16,8 @@ class HamiltonianMC(BaseSampler):
 
         :param log_posterior: Log-probability of the target distribution to be sampled from
         :type log_posterior: callable
-        :param log_posterior_gradient: Log-probability of the gradient of the target distribution to be sampled from
+        :param log_posterior_gradient: Log-probability of the gradient of the target distribution
+                                       to be sampled from
         :type log_posterior_gradient: callable
         """
 
@@ -129,7 +130,9 @@ class HamiltonianMC(BaseSampler):
 
         :param iter: Number of iterations of the algorithm
         :type iter: int
-        :param warmup: Number of warmup steps of the algorithm. These are discarded so that the only samples recorded are the ones obtained after the Markov chain has reached the stationary distribution
+        :param warmup: Number of warmup steps of the algorithm. These are discarded so that the
+                       only samples recorded are the ones obtained after the Markov chain has
+                       reached the stationary distribution
         :type warmup: int
         :param theta: Vector of initial values of parameter(s)
         :type theta: ndarray
@@ -139,7 +142,9 @@ class HamiltonianMC(BaseSampler):
         :type l: int
         :param metric: Covariance matrix of the momentum vector sampling distribution
         :type metric: ndarray
-        :param lag: Sampler lag. Parameter specifying every how many iterations will the sample be recorded. Used to limit autocorrelation of the samples. If `lag=1`, every sample is recorded, if `lag=3` each third sample is recorded, etc. , defaults to 1
+        :param lag: Sampler lag. Parameter specifying every how many iterations will the sample
+                    be recorded. Used to limit autocorrelation of the samples. If `lag=1`, every
+                    sample is recorded, if `lag=3` each third sample is recorded, etc. , defaults to 1
         :type lag: int, optional
         :return: Numpy arrays of samples and acceptance information for every algorithm iteration.
         :rtype: ndarray, ndarray
