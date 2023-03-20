@@ -13,7 +13,7 @@ setup(
     url="https://github.com/draktr/monte-library",
     author="draktr",
     license="MIT License",
-    packages=["monte-library"],
+    packages=["monte"],
     python_requires=">=3.6",
     install_requires=[
         "numpy",
