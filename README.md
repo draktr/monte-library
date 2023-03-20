@@ -3,7 +3,7 @@
 Monte is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.
 
 * Free software: MIT license
-* Documentation: <https://monte.readthedocs.io/en/latest/>
+* Documentation: <https://monte-library.readthedocs.io/en/latest/>
 
 ## Installation
 
