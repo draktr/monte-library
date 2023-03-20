@@ -1,7 +1,7 @@
-Monte
-=====
+Monte Library
+=============
 
-Monte is a set of Monte Carlo methods in Python. The package is written
+monte-library is a set of Monte Carlo methods in Python. The package is written
 to be flexible, clear to understand and encompass variety of Monte Carlo
 methods.
 
@@ -11,19 +11,19 @@ methods.
 Installation
 ------------
 
-Preferred method to install ``monte`` is through Python’s package
-installer pip. To install ``monte``, run this command in your terminal
+Preferred method to install ``monte-library`` is through Python’s package
+installer pip. To install ``monte-library``, run this command in your terminal
 
 .. code:: shell
 
-   pip install monte
+   pip install monte-library
 
 Alternatively, you can install the package directly from GitHub:
 
 .. code:: shell
 
-   git clone -b development https://github.com/draktr/monte.git
-   cd monte
+   git clone -b development https://github.com/draktr/monte-library.git
+   cd monte-library
    python setup.py install
 
 Features
@@ -59,7 +59,7 @@ Advantages
 
 -  **FLEXIBLE** - the package allows users to use various existing Monte
    Carlo methods for their needs without needing to write the whole
-   algorithm. At the same time, ``monte`` allows users to specify their
+   algorithm. At the same time, ``monte-library`` allows users to specify their
    own hyperparameters, posterior and proposal distributions as needed.
    Furthermore ``BaseSampler`` class can be used as parent class for any
    proprietary Monte Carlo algorithm thus utilizing its features for
@@ -67,7 +67,7 @@ Advantages
 
 -  **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple
    to be understandable to those with limited exposure to Statistical
-   Computing. ``monte`` is a great tool to supplement learning as it
+   Computing. ``monte-library`` is a great tool to supplement learning as it
    generally matches mathematical formulations of algorithms and simple
    syntax helps focus on the algorithm itself.
 
@@ -96,7 +96,7 @@ Example 1: Monte Carlo Integration
 The following example is a simple Monte Carlo implementation to solve
 the following integral:
 
-.. math::  \int_{-3}^{3} \int_{-3}^{3} x^2 + y^3 dxdy 
+.. math::  \int_{-3}^{3} \int_{-3}^{3} x^2 + y^3 dxdy
 
 .. code:: python
 

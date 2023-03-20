@@ -3,7 +3,7 @@ Further Reading
 ###############
 
 The following is the non-exhaustive list of useful sources for learning
-more about Monte Carlo methods. Some of the code in ``monte`` has been
+more about Monte Carlo methods. Some of the code in ``monte-library`` has been
 written based on mathematical formulae from some of these sources.
 
 General

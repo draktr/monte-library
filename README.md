@@ -1,23 +1,23 @@
-# Monte
+# Monte Library
 
-Monte is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.
+monte-library is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.
 
 * Free software: MIT license
 * Documentation: <https://monte-library.readthedocs.io/en/latest/>
 
 ## Installation
 
-Preferred method to install `monte` is through Python's package installer pip. To install `monte`, run this command in your terminal
+Preferred method to install `monte-library` is through Python's package installer pip. To install `monte-library`, run this command in your terminal
 
 ```shell
-pip install monte
+pip install monte-library
 ```
 
 Alternatively, you can install the package directly from GitHub:
 
 ```shell
-git clone -b development https://github.com/draktr/monte.git
-cd monte
+git clone -b development https://github.com/draktr/monte-library.git
+cd monte-library
 python setup.py install
 ```
 
@@ -45,9 +45,9 @@ python setup.py install
 
 ## Advantages
 
-* **FLEXIBLE** - the package allows users to use various existing Monte Carlo methods for their needs without needing to write the whole algorithm. At the same time,  `monte` allows users to specify their own hyperparameters, posterior and proposal distributions as needed. Furthermore `BaseSampler` class can be used as parent class for any proprietary Monte Carlo algorithm thus utilizing its features for visualizations, posterior analysis and convergence checks
+* **FLEXIBLE** - the package allows users to use various existing Monte Carlo methods for their needs without needing to write the whole algorithm. At the same time,  `monte-library` allows users to specify their own hyperparameters, posterior and proposal distributions as needed. Furthermore `BaseSampler` class can be used as parent class for any proprietary Monte Carlo algorithm thus utilizing its features for visualizations, posterior analysis and convergence checks
 
-* **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `monte` is a great tool to supplement learning as it generally matches mathematical formulations of algorithms and simple syntax helps focus on the algorithm itself.
+* **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `monte-library` is a great tool to supplement learning as it generally matches mathematical formulations of algorithms and simple syntax helps focus on the algorithm itself.
 
 * **COMPREHENSIVE** - includes Monte Calor methods for various applications. Bayesian modelling methods include both classical methods (Metropolis algorithm) as well as more advanced methods such as Hamiltonian Monte Carlo.
 

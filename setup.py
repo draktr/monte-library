@@ -3,19 +3,17 @@ import re
 
 with open("README.md", "r") as f:
     desc = f.read()
-    desc = desc.split("<!-- content -->")[-1]
-    desc = re.sub("<[^<]+?>", "", desc)
 
 setup(
-    name="monte",
+    name="monte-library",
     version="0.1.0",
-    description="Monte is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.",
+    description="monte-library is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.",
     long_description=desc,
     long_description_content_type="text/markdown",
-    url="https://github.com/draktr/monte",
+    url="https://github.com/draktr/monte-library",
     author="draktr",
     license="MIT License",
-    packages=["monte"],
+    packages=["monte-library"],
     python_requires=">=3.6",
     install_requires=[
         "numpy",
@@ -43,7 +41,7 @@ setup(
         "Topic :: Scientific/Engineering :: Physics",
     ],
     project_urls={
-        "Documentation": "https://monte.readthedocs.io/en/latest/",
-        "Issues": "https://github.com/draktr/monte/issues",
+        "Documentation": "https://monte-library.readthedocs.io/en/latest/",
+        "Issues": "https://github.com/draktr/monte-library/issues",
     },
 )
