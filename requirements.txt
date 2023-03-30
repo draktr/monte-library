@@ -1,3 +1,4 @@
+monte-library>=0.1.0
 numpy>=1.23.3
 scipy>=1.9.1
 pandas>=1.4.4
