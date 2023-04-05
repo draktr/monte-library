@@ -38,7 +38,7 @@ Metropolis
   https://vitaliiur.github.io/blog/2021/linreg/
 
 Gibbs Sampler
-~~~~~~~~~~~~~
+-------------
 
 | [9] Geman, S., & Geman, D. (1984). Stochastic Relaxation, Gibbs
   Distributions, and the Bayesian Restoration of Images. IEEE
