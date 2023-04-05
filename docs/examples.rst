@@ -32,7 +32,7 @@ estimate parameters of a multivariate linear regression.
    from scipy import stats
    from monte import GaussianMetropolis
 
-   # First, we create data
+   # First, we generate some data
    true_theta = np.array([5, 10, 2, 2, 4])
    n = 1000
    x = np.zeros((n, 4))

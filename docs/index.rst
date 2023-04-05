@@ -1,7 +1,7 @@
 Monte Library
 =============
 
-monte-library is a set of Monte Carlo methods in Python. The package is written
+``monte-library`` is a set of Monte Carlo methods in Python. The package is written
 to be flexible, clear to understand and encompass variety of Monte Carlo
 methods.
 
@@ -63,7 +63,7 @@ Advantages
    own hyperparameters, posterior and proposal distributions as needed.
    Furthermore ``BaseSampler`` class can be used as parent class for any
    proprietary Monte Carlo algorithm thus utilizing its features for
-   visualizations, posterior analysis and convergence checks
+   visualizations, posterior analysis and convergence checks.
 
 -  **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple
    to be understandable to those with limited exposure to Statistical
