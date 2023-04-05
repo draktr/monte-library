@@ -38,26 +38,30 @@ Metropolis
   https://vitaliiur.github.io/blog/2021/linreg/
 
 Gibbs Sampler
--------------
+~~~~~~~~~~~~~
 
-[9] Campbell, K. R. (n.d.). Gibbs sampling for Bayesian linear
-regression in Python \| Kieran R Campbell - blog. Retrieved February 15,
-2023, from
-https://kieranrcampbell.github.io/blog/2016/05/15/gibbs-sampling-bayesian-linear-regression.html
+| [9] Geman, S., & Geman, D. (1984). Stochastic Relaxation, Gibbs
+  Distributions, and the Bayesian Restoration of Images. IEEE
+  Transactions on Pattern Analysis and Machine Intelligence, PAMI-6(6),
+  721–741. https://doi.org/10.1109/TPAMI.1984.4767596
+| [10] Campbell, K. R. (n.d.). Gibbs sampling for Bayesian linear
+  regression in Python \| Kieran R Campbell - blog. Retrieved February
+  15, 2023, from
+  https://kieranrcampbell.github.io/blog/2016/05/15/gibbs-sampling-bayesian-linear-regression.html
 
 Hamiltonian Monte Carlo
 -----------------------
 
-| [10] Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian
+| [11] Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian
   Monte Carlo. https://doi.org/10.48550/arxiv.1701.02434
-| [11] Neal, R. M. (2012). MCMC using Hamiltonian dynamics. Handbook of
+| [12] Neal, R. M. (2012). MCMC using Hamiltonian dynamics. Handbook of
   Markov Chain Monte Carlo, 1–592. https://doi.org/10.1201/b10905
-| [12] Stan. (n.d.). 15.1 Hamiltonian Monte Carlo \| Stan Reference
+| [13] Stan. (n.d.). 15.1 Hamiltonian Monte Carlo \| Stan Reference
   Manual. Retrieved February 15, 2023, from
   https://mc-stan.org/docs/reference-manual/hamiltonian-monte-carlo.html
-| [13] Clark, M. (n.d.). Hamiltonian Monte Carlo \| Model Estimation by
+| [14] Clark, M. (n.d.). Hamiltonian Monte Carlo \| Model Estimation by
   Example. Retrieved February 15, 2023, from
   https://m-clark.github.io/models-by-example/hamiltonian-monte-carlo.html
-| [14] Richard. (n.d.). Markov Chains: Why Walk When You Can Flow? \|
+| [15] Richard. (n.d.). Markov Chains: Why Walk When You Can Flow? \|
   Elements of Evolutionary Anthropology. Retrieved February 15, 2023,
   from http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/
