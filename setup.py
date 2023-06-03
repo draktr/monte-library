@@ -1,5 +1,4 @@
 from setuptools import setup
-import re
 
 with open("README.md", "r") as f:
     desc = f.read()
