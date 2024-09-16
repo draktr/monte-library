@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from statsmodels.graphics.tsaplots import plot_acf
+from statsmodels.graphics import tsaplots
 from statsmodels.tsa.stattools import acf
 
 
@@ -271,7 +271,7 @@ class BaseSampler:
         fig = plt.figure(figsize=figsize, constrained_layout=True)
         axs = [plt.subplot(dim, 1, i + 1) for i in range(dim)]
         for i in range(dim):
-            plot_acf(self.samples[:, i], ax=axs[i], **kwargs)
+            tsaplots.plot_acf(self.samples[:, i], ax=axs[i], **kwargs)
             axs[i].set_xlabel("iteration")
             axs[i].set_ylabel(f"theta_{i}")
             axs[i].set_title(f"theta_{i} ACF")
