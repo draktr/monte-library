@@ -194,6 +194,51 @@ class BaseSampler:
         if show is True:
             plt.show()
 
+    def plot_histogram_fold(
+        self, k=2, style="default", rcParams_update={}, show=True, save=False
+    ):
+        """
+        Plots histograms of `k`-subsets of the samples
+
+        :param k: Number of subsets taken from the Markov chain for histogram plotting,
+                defaults to 2
+        :type k: int, optional
+        :param style: `matplotlib` style to be used for plots. User can pass
+                    built-in `matplotlib` style (e.g. `classic`, `fivethirtyeight`),
+                    or a path to a custom style defined in a `.mplstyle` document,
+                    defaults to "default"
+        :type style: str, optional
+        :param rcParams_update: `matplotlib.rcParams` to modify the style defined by
+                                `style` argument, defaults to {} (no modification)
+        :type rcParams_update: dict, optional
+        :param show: Whether to show the plot, defaults to True
+        :type show: bool, optional
+        :param save: Whether to save the plot, defaults to False
+        :type save: bool, optional
+        """
+
+        plt.style.use(style)
+        plt.rcParams.update({"figure.figsize": (3, 3 * k)})
+        plt.rcParams.update(**rcParams_update)
+        fig, axs = plt.subplots(nrows=k, ncols=self.samples.shape[1])
+        for i in range(k):
+            for j in range(self.samples.shape[1]):
+                self.samples.iloc[
+                    int(i * self.samples.shape[0] / k) : int(
+                        (i + 1) * self.samples.shape[0] / k, j
+                    )
+                ].hist(ax=axs[i, j])
+                axs[i, j].set_xlabel("Value")
+                axs[i, j].set_ylabel("Frequency")
+                axs[i, j].set_title("Probability Density (histogram)")
+        fig.suptitle("All Chains Histograms")
+        fig.tight_layout()
+        plt.show()
+        if save:
+            plt.savefig("hist_comp.png")
+        if show:
+            plt.show()
+
     def parameter_kde(
         self, figsize=(12, 8), histogram=True, bins=100, show=True, save=False, **kwargs
     ):
