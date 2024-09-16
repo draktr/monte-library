@@ -332,11 +332,10 @@ class BaseSampler:
         :rtype: ndarray
         """
 
-        dim = self.samples.shape[1]
-        n = self.samples.shape[0]
-        chain_acf = np.zeros((n, dim))
-        ess = np.zeros(dim)
-        for i in range(dim):
-            chain_acf[:, i] = acf(self.samples[:, i])
-            ess[i] = n / (1 + 2 * np.sum(chain_acf[1:]))
+        ess = np.empty((self.samples.shape[1]))
+        for param in range(self.samples.shape[1]):
+            ess[param] = self.samples.shape[0] / (
+                1 + 2 * np.sum(acf(self.samples[:, param])[1:])
+            )
+
         return ess
