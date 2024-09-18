@@ -9,16 +9,18 @@
 
 Preferred method to install `monte-library` is through Python's package installer pip. To install `monte-library`, run this command in your terminal
 
-```shell
+```sh {"id":"01J7YPVZY7NE5CNA8881H6KYRX"}
 pip install monte-library
+
 ```
 
 Alternatively, you can install the package directly from GitHub:
 
-```shell
+```sh {"id":"01J7YPVZY7NE5CNA8883TKPRRW"}
 git clone -b development https://github.com/draktr/monte-library.git
 cd monte-library
 python setup.py install
+
 ```
 
 ## Features
@@ -27,7 +29,7 @@ python setup.py install
 
 * saving samples and log probability values as `.csv` file
 * posterior mean, standard deviation and quantiles
-* diagnostic tools: effective sample size (ESS), autocorrelation plots, ergodic mean plots, acceptance rate
+* diagnostic tools: effective sample size (ESS), autocorrelation plots, ergodic mean plots, acceptance rate, k-fold histograms, Gelman-Rubin statistic (R-hat), Multivariate Gelman-Rubin Statistic (R-hat), Geweke diagnostic, Heidelberger-Welch diagnostic, Raftery-Lewis diagnostic, Markov chain stationarity tests
 * visualizations: histograms, kernel density estimation plots, traceplots
 
 ### General Monte Carlo Methods
@@ -46,9 +48,7 @@ python setup.py install
 ## Advantages
 
 * **FLEXIBLE** - the package allows users to use various existing Monte Carlo methods for their needs without needing to write the whole algorithm. At the same time, `monte-library` allows users to specify their own hyperparameters, posterior and proposal distributions as needed. Furthermore `BaseSampler` class can be used as parent class for any proprietary Monte Carlo algorithm thus utilizing its features for visualizations, posterior analysis and convergence checks.
-
 * **SIMPLE AND CLEAR CODE BASE** - code was intentionally kept simple to be understandable to those with limited exposure to Statistical Computing. `monte-library` is a great tool to supplement learning as it generally matches mathematical formulations of algorithms and simple syntax helps focus on the algorithm itself.
-
 * **COMPREHENSIVE** - includes Monte Calor methods for various applications. Bayesian modelling methods include both classical methods (Metropolis algorithm) as well as more advanced methods such as Hamiltonian Monte Carlo.
 
 ## Usage
@@ -60,7 +60,7 @@ Package contains variety of Monte Carlo methods that can be applied to problems 
 The following example is a simple Monte Carlo implementation to solve the following integral:
 $$\int_{-3}^{3} \int_{-3}^{3} x^2 + y^3 dxdy$$
 
-```python
+```python {"id":"01J7YPVZY8V7N7020MGVZT89BX"}
 from monte import integrator
 
 def integrand(args):
@@ -69,13 +69,14 @@ def integrand(args):
 result = integrator(integrand, lower_bounds=[-3, -3], upper_bounds=[3, 3], n=10000000)
 result
 
+
 ```
 
 ### Example 2: Bayesian Linear Regression with Metropolis Algorithm
 
 Example 2 is using Metropolis algorithm (with Gaussian proposal) to estimate parameters of a multivariate linear regression.
 
-```python
+```python {"id":"01J7YPVZY8V7N7020MGZW4XSP1"}
 import numpy as np
 from scipy import stats
 from monte import GaussianMetropolis
@@ -116,11 +117,12 @@ gaussian_sampler.sample(
     y=y,
     )
 
+
 ```
 
 Using methods from the `BaseSampler` class we can perform posterior analytics. These are some of the analytics methods:
 
-```python
+```python {"id":"01J7YPVZY8V7N7020MH2JD85ZM"}
 # Checking parameter estimates and their credible intervals
 gaussian_sampler.mean()
 gaussian_sampler.credible_interval()
@@ -134,13 +136,14 @@ gaussian_sampler.parameter_kde()
 # Plotting traceplots and ergodic means, and calculating effective sample sizes as convergence diagnostics
 gaussian_sampler.traceplots()
 gaussian_sampler.plot_ergodic_mean()
+
 ```
 
 ### Example 3: Sampling from a Multivariate Distribution using Hamiltonian Monte Carlo
 
 In the following example we use Hamiltonian Monte Carlo (HMC) algorithm to sample from a distribution. Note that this is a toy example, and HMC is more appropriate to be used for higher-dimensional model parameter estimation. Also note that analytical gradient is not necessary.
 
-```python
+```python {"id":"01J7YPVZY8V7N7020MH433XS59"}
 import numpy as np
 from monte import HamiltonianMC
 
@@ -163,6 +166,7 @@ sampler.sample(
     metric=None,
     lag=1,
     )
+
 ```
 
 ## Alternatives and Complements
@@ -200,9 +204,6 @@ Feel free to reach out through Issues forum if you wish to add features or help 
 * Forrest plot of parameter estimates with credible intervals
 * Monte Carlo Error
 * Support for multiple chains
-* Convergence iterations required (Raftery-Lewis 1995)
-* Rhat (Gelman-Rubin 1992)
-* Means equality test (Geweke 1992)
 
 #### Monte Carlo Methods
 
@@ -221,27 +222,27 @@ The following is the non-exhaustive list of useful sources for learning more abo
 
 ### General
 
-<a id="1">[1]</a> Ntzoufras, I. (2009). Bayesian Modelling Using WinBUGS. Wiley. \
-<a id="2">[2]</a> Metropolis, N., & Ulam, S. (1949). The Monte Carlo Method. Journal of the American Statistical Association, 44(247), 335–341. <https://doi.org/10.1080/01621459.1949.10483310>
+[1] Ntzoufras, I. (2009). Bayesian Modelling Using WinBUGS. Wiley.   
+[2] Metropolis, N., & Ulam, S. (1949). The Monte Carlo Method. Journal of the American Statistical Association, 44(247), 335–341. <https://doi.org/10.1080/01621459.1949.10483310>
 
 ### Metropolis
 
-<a id="3">[3]</a> Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H., & Teller, E. (2004). Equation of State Calculations by Fast Computing Machines. The Journal of Chemical Physics, 21(6), 1087. <https://doi.org/10.1063/1.1699114> \
-<a id="4">[4]</a> Hastings, W. K. (1970). Monte Carlo sampling methods using Markov chains and their applications. Biometrika, 57(1), 97–109. <https://doi.org/10.1093/BIOMET/57.1.97> \
-<a id="5">[5]</a> Hartig, F. (n.d.). A simple Metropolis-Hastings MCMC in R | theoretical ecology. Retrieved February 15, 2023, from <https://theoreticalecology.wordpress.com/2010/09/17/metropolis-hastings-mcmc-in-r/> \
-<a id="6">[6]</a> Dirty Quant @YouTube. (n.d.). The Metropolis-Hastings Algorithm (MCMC in Python) - YouTube. Retrieved February 15, 2023, from <https://www.youtube.com/watch?v=MxI78mpq_44> \
-<a id="7">[7]</a> TWEAG Software Innovation Lab. (n.d.). Markov chain Monte Carlo (MCMC) Sampling, Part 1: The Basics - Tweag. Retrieved February 15, 2023, from <https://www.tweag.io/blog/2019-10-25-mcmc-intro1/> \
-<a id="8">[8]</a> Urbanevych, V. (n.d.). VU | Bayesian linear regression and Metropolis-Hastings sampler. Retrieved February 15, 2023, from <https://vitaliiur.github.io/blog/2021/linreg/>
+[3] Metropolis, N., Rosenbluth, A. W., Rosenbluth, M. N., Teller, A. H., & Teller, E. (2004). Equation of State Calculations by Fast Computing Machines. The Journal of Chemical Physics, 21(6), 1087. <https://doi.org/10.1063/1.1699114>   
+[4] Hastings, W. K. (1970). Monte Carlo sampling methods using Markov chains and their applications. Biometrika, 57(1), 97–109. <https://doi.org/10.1093/BIOMET/57.1.97>   
+[5] Hartig, F. (n.d.). A simple Metropolis-Hastings MCMC in R | theoretical ecology. Retrieved February 15, 2023, from <https://theoreticalecology.wordpress.com/2010/09/17/metropolis-hastings-mcmc-in-r/>   
+[6] Dirty Quant @YouTube. (n.d.). The Metropolis-Hastings Algorithm (MCMC in Python) - YouTube. Retrieved February 15, 2023, from <https://www.youtube.com/watch?v=MxI78mpq_44>   
+[7] TWEAG Software Innovation Lab. (n.d.). Markov chain Monte Carlo (MCMC) Sampling, Part 1: The Basics - Tweag. Retrieved February 15, 2023, from <https://www.tweag.io/blog/2019-10-25-mcmc-intro1/>   
+[8] Urbanevych, V. (n.d.). VU | Bayesian linear regression and Metropolis-Hastings sampler. Retrieved February 15, 2023, from <https://vitaliiur.github.io/blog/2021/linreg/>
 
 ### Gibbs Sampler
 
-<a id="9">[9]</a> Geman, S., & Geman, D. (1984). Stochastic Relaxation, Gibbs Distributions, and the Bayesian Restoration of Images. IEEE Transactions on Pattern Analysis and Machine Intelligence, PAMI-6(6), 721–741. <https://doi.org/10.1109/TPAMI.1984.4767596> \
-<a id="10">[10]</a> Campbell, K. R. (n.d.). Gibbs sampling for Bayesian linear regression in Python | Kieran R Campbell - blog. Retrieved February 15, 2023, from <https://kieranrcampbell.github.io/blog/2016/05/15/gibbs-sampling-bayesian-linear-regression.html>
+[9] Geman, S., & Geman, D. (1984). Stochastic Relaxation, Gibbs Distributions, and the Bayesian Restoration of Images. IEEE Transactions on Pattern Analysis and Machine Intelligence, PAMI-6(6), 721–741. <https://doi.org/10.1109/TPAMI.1984.4767596>   
+[10] Campbell, K. R. (n.d.). Gibbs sampling for Bayesian linear regression in Python | Kieran R Campbell - blog. Retrieved February 15, 2023, from <https://kieranrcampbell.github.io/blog/2016/05/15/gibbs-sampling-bayesian-linear-regression.html>
 
 ### Hamiltonian Monte Carlo
 
-<a id="11">[11]</a> Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian Monte Carlo. <https://doi.org/10.48550/arxiv.1701.02434> \
-<a id="12">[12]</a> Neal, R. M. (2012). MCMC using Hamiltonian dynamics. Handbook of Markov Chain Monte Carlo, 1–592. <https://doi.org/10.1201/b10905> \
-<a id="13">[13]</a> Stan. (n.d.). 15.1 Hamiltonian Monte Carlo | Stan Reference Manual. Retrieved February 15, 2023, from <https://mc-stan.org/docs/reference-manual/hamiltonian-monte-carlo.html> \
-<a id="14">[14]</a> Clark, M. (n.d.). Hamiltonian Monte Carlo | Model Estimation by Example. Retrieved February 15, 2023, from <https://m-clark.github.io/models-by-example/hamiltonian-monte-carlo.html> \
-<a id="15">[15]</a> Richard. (n.d.). Markov Chains: Why Walk When You Can Flow? | Elements of Evolutionary Anthropology. Retrieved February 15, 2023, from <http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/>
+[11] Betancourt, M. (2017). A Conceptual Introduction to Hamiltonian Monte Carlo. <https://doi.org/10.48550/arxiv.1701.02434>   
+[12] Neal, R. M. (2012). MCMC using Hamiltonian dynamics. Handbook of Markov Chain Monte Carlo, 1–592. <https://doi.org/10.1201/b10905>   
+[13] Stan. (n.d.). 15.1 Hamiltonian Monte Carlo | Stan Reference Manual. Retrieved February 15, 2023, from <https://mc-stan.org/docs/reference-manual/hamiltonian-monte-carlo.html>   
+[14] Clark, M. (n.d.). Hamiltonian Monte Carlo | Model Estimation by Example. Retrieved February 15, 2023, from <https://m-clark.github.io/models-by-example/hamiltonian-monte-carlo.html>   
+[15] Richard. (n.d.). Markov Chains: Why Walk When You Can Flow? | Elements of Evolutionary Anthropology. Retrieved February 15, 2023, from <http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/>
