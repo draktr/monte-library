@@ -1,0 +1,7 @@
+monte-library>=0.2.0
+numpy>=1.21.6
+scipy>=1.7.3
+pandas>=1.3.5
+matplotlib>=3.5.3
+seaborn>=0.12.0
+statsmodels>=0.13.2
