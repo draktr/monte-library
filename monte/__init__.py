@@ -13,8 +13,9 @@ from monte.importance_sampling import importance
 from monte.metropolis_hastings import MetropolisHastings
 from monte.monte_carlo_integrator import integrator
 from monte.rejection_sampling import rejection
+from monte.convergence_checks import *
 
 __all__ = [s for s in dir() if not s.startswith("_")]
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __author__ = "draktr"

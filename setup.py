@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="monte-library",
-    version="0.1.0",
+    version="0.2.0",
     description="monte-library is a set of Monte Carlo methods in Python. The package is written to be flexible, clear to understand and encompass variety of Monte Carlo methods.",
     long_description=desc,
     long_description_content_type="text/markdown",
