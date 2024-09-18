@@ -1,5 +1,5 @@
 Metropolis-Hastings Algorithm
-=================================
+=============================
 
 .. automodule:: monte.metropolis_hastings
    :members:

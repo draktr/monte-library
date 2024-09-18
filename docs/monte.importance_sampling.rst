@@ -1,5 +1,5 @@
 Importance Sampling
-=================================
+===================
 
 .. automodule:: monte.importance_sampling
    :members:

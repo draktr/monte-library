@@ -1,5 +1,5 @@
 Gaussian Metropolis Algorithm
-=================================
+=============================
 
 .. automodule:: monte.gaussian_metropolis
    :members:

@@ -18,9 +18,6 @@ In ``BaseSampler`` Class
 -  Forrest plot of parameter estimates with credible intervals
 -  Monte Carlo Error
 -  Support for multiple chains
--  Convergence iterations required (Raftery-Lewis 1995)
--  Rhat (Gelman-Rubin 1992)
--  Means equality test (Geweke 1992)
 
 Monte Carlo Methods
 ~~~~~~~~~~~~~~~~~~~

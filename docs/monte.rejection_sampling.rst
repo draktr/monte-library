@@ -1,5 +1,5 @@
 Rejection Sampling
-================================
+==================
 
 .. automodule:: monte.rejection_sampling
    :members:

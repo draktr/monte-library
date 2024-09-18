@@ -35,7 +35,10 @@ Base module
 -  saving samples and log probability values as ``.csv`` file
 -  posterior mean, standard deviation and quantiles
 -  diagnostic tools: effective sample size (ESS), autocorrelation plots,
-   ergodic mean plots, acceptance rate
+   ergodic mean plots, acceptance rate, k-fold histograms,
+   Gelman-Rubin statistic (R-hat), Multivariate Gelman-Rubin Statistic (R-hat),
+   Geweke diagnostic, Heidelberger-Welch diagnostic, Raftery-Lewis diagnostic,
+   Markov chain stationarity tests
 -  visualizations: histograms, kernel density estimation plots,
    traceplots
 
@@ -121,6 +124,7 @@ the following integral:
     monte.metropolis_hastings
     monte.monte_carlo_integrator
     monte.rejection_sampling
+    monte.convergence_checks
 
 .. toctree::
     :maxdepth: 1

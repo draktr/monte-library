@@ -1,5 +1,5 @@
 Gibbs Sampler
-===========================
+=============
 
 .. automodule:: monte.gibbs_sampler
    :members:

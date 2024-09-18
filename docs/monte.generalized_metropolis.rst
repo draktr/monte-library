@@ -1,5 +1,5 @@
 Generalized Metropolis Algorithm
-====================================
+================================
 
 .. automodule:: monte.generalized_metropolis
    :members:

@@ -1,5 +1,5 @@
 Base Sampler Class
-==========================
+==================
 
 .. automodule:: monte.base_sampler
    :members:

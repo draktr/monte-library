@@ -1,5 +1,5 @@
 Monte Carlo Integrator
-=====================================
+======================
 
 .. automodule:: monte.monte_carlo_integrator
    :members:
