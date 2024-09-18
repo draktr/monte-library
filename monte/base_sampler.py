@@ -8,7 +8,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from statsmodels.graphics import tsaplots
-from statsmodels.tsa.stattools import acf
+from statsmodels.tsa.stattools import acf, adfuller, kpss
+from statsmodels.stats.weightstats import ztest
+from scipy.stats import norm, chi2, cramervonmises
 
 
 class BaseSampler:
@@ -223,7 +225,7 @@ class BaseSampler:
         fig, axs = plt.subplots(nrows=k, ncols=self.samples.shape[1])
         for i in range(k):
             for j in range(self.samples.shape[1]):
-                self.samples.iloc[
+                self.samples[
                     int(i * self.samples.shape[0] / k) : int(
                         (i + 1) * self.samples.shape[0] / k, j
                     )
@@ -384,3 +386,155 @@ class BaseSampler:
             )
 
         return ess
+
+    def geweke(self, first=0.1, last=0.5):
+        """
+        Calculates Geweke diagnostic for a Markov chain
+
+        :param first: The fraction of the chain to use for the first segment, defaults to 0.1
+        :type first: float, optional
+        :param last: The fraction of the chain to use for the last segment, defaults to 0.5
+        :type last: float, optional
+        :return: Test Z-scores and p-values
+        :rtype: float, float
+        """
+
+        n = self.samples.shape[0]
+        n_params = self.samples.shape[1]
+        z_score = np.empty(n_params)
+        p_value = np.empty(n_params)
+
+        for param in range(self.samples.shape[1]):
+            chain = self.samples[:, param]
+            first_segment = chain[: int(first * n)]
+            last_segment = chain[-int(last * n) :]
+
+            z_score[param], p_value[param] = ztest(x1=first_segment, x2=last_segment)
+
+        return z_score, p_value
+
+    def heidelberger_welch(self, alpha=0.05):
+        """
+        Calculates Heidelberger-Welch diagnostic for a Markov chain
+
+        :param alpha: Test significance level, defaults to 0.05
+        :type alpha: float, optional
+        :return: Diagnostic results, including: stationarity test result,
+                halfwidth test result, initial chain mean,
+                updated chain start, chain end, updated chain mean
+        :rtype: dict
+        """
+
+        n = self.samples.shape[0]
+        n_params = self.samples.shape[1]
+
+        results = {
+            "stationarity": np.repeat(False, n_params),
+            "halfwidth": np.repeat(False, n_params),
+            "mean": np.mean(self.samples, axis=0),
+            "start": np.zeros(n_params),
+            "end": np.repeat(n, n_params),
+            "mean_final": np.repeat(None, n_params),
+        }
+
+        # Stationarity test
+        for param in range(n_params):
+            for start in range(0, n, n // 10):
+                current_chain = self.samples[start:, param]
+                sorted_data = np.sort(current_chain)
+                cvm_result = cramervonmises(sorted_data, "uniform")
+
+                if cvm_result.pvalue > alpha:
+                    results["stationarity"][param] = True
+                    results["start"][param] = start
+                    break
+
+            if not results["stationarity"][param]:
+                return results
+
+            # Halfwidth test
+            final_chain = self.samples[results["start"][param] :, param]
+            n_final = len(final_chain)
+            mean_final = np.mean(final_chain)
+            var_final = np.var(final_chain, ddof=1)
+            se_final = np.sqrt(var_final / n_final)
+
+            z = chi2.ppf(1 - alpha / 2, df=1)
+            halfwidth = z * se_final
+
+            if halfwidth < alpha * abs(mean_final):
+                results["halfwidth"][param] = True
+
+            results["mean_final"][param] = mean_final
+            results["end"][param] = n
+
+        return results
+
+    def raftery_lewis(self, q=0.025, r=0.005, s=0.95):
+        """
+        Calculates Raftery-Lewis diagnostic
+
+        :param q: The quantile of interest, defaults to 0.025 for a lower tail quantile
+        :type q: float, optional
+        :param r: The accuracy required, defaults to 0.005
+        :type r: float, optional
+        :param s: The probability of achieving the specified accuracy, defaults to 0.95
+        :type s: float, optional
+        :return: Diagnostic results and specifications, including: quantile of interest,
+                requires samples, burn-in samples, total samples, accuracy required,
+                probability of reaching that accuracy
+        :rtype: dict
+        """
+
+        n_params = self.samples.shape[1]
+        results = {
+            "quantile": np.repeat(q, n_params),
+            "required_samples": np.repeat(None, n_params),
+            "burn_in": np.repeat(None, n_params),
+            "total_samples": np.repeat(None, n_params),
+            "accuracy": np.repeat(r, n_params),
+            "probability": np.repeat(s, n_params),
+        }
+
+        for param in range(n_params):
+            quantile_estimate = np.percentile(self.samples[:, param], q * 100)
+            exceedance = self.samples[:, param] >= quantile_estimate
+            m = np.mean(exceedance)
+            z = norm.ppf((1 + s) / 2)
+
+            n_required = int((z**2 * m * (1 - m)) / (r**2))
+            burn_in = np.where(exceedance == 1)[0][0] if np.any(exceedance) else 0
+            total_samples = burn_in + n_required
+
+            results["required_samples"][param] = n_required
+            results["burn_in"][param] = burn_in
+            results["total_samples"][param] = total_samples
+
+        return results
+
+    def stationarity_test(self, test="adf", **kwargs):
+        """
+        Test for the stationarity of Markov chains
+
+        :param test: Statistical test used. Available are Augmented Dickey-Fuller test (`adf`)
+                    and Kwiatkowski–Phillips–Schmidt–Shin test (`kpss`), defaults to "adf"
+        :type test: str, optional
+        :return: Test statistic, p-value
+        :rtype: float, float
+        """
+
+        n_params = self.samples.shape[1]
+        results = np.empty((n_params, 2))
+
+        if test == "adf":
+            for param in range(n_params):
+                results[param] = adfuller(
+                    self.samples[:, self.samples.shape[1]], **kwargs
+                )
+            return results[param, 0], results[param, 1]
+        elif test == "kpss":
+            for param in range(n_params):
+                results[param] = kpss(self.samples[:, self.samples.shape[1]], **kwargs)
+            return results[param, 0], results[param, 1]
+        else:
+            ValueError("Test unavailable. Available tests are `adf` and `kspp`.")
